@@ -7,6 +7,9 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGOUT,
+  UPDATE_ME_REQUEST,
+  UPDATE_ME_SUCCESS,
+  UPDATE_ME_FAIL,
 } from '../constants/userConstants'
 
 export const signup = (firstName, lastName, email, password) => async (
@@ -23,25 +26,26 @@ export const signup = (firstName, lastName, email, password) => async (
       },
     }
 
-    const {
-      data: { data },
-    } = await axios.post(
+    const { data } = await axios.post(
       '/api/v1/users/signup',
       { firstName, lastName, email, password },
       config
     )
+    const token = data.token
+    const user = data.data.user
+    user.token = token
 
     dispatch({
       type: USER_SIGNUP_SUCCESS,
-      payload: data.user,
+      payload: user,
     })
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
-      payload: data.user,
+      payload: user,
     })
-    console.log('DATA!!!!!!!!!!!!!!!', data.user)
-    localStorage.setItem('userInfo', JSON.stringify(data.user))
+
+    localStorage.setItem('userInfo', JSON.stringify(user))
   } catch (error) {
     dispatch({
       type: USER_SIGNUP_FAIL,
@@ -65,18 +69,22 @@ export const login = (email, password) => async (dispatch) => {
       },
     }
 
-    const {
-      data: { data },
-    } = await axios.post('/api/v1/users/login', { email, password }, config)
+    const { data } = await axios.post(
+      '/api/v1/users/login',
+      { email, password },
+      config
+    )
+
+    const token = data.token
+    const user = data.data.user
+    user.token = token
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
-      payload: data.user,
+      payload: user,
     })
 
-    console.log('DATA!!!!!!!!!!!!!!!', data.user)
-
-    localStorage.setItem('userInfo', JSON.stringify(data.user))
+    localStorage.setItem('userInfo', JSON.stringify(user))
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -91,5 +99,51 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   localStorage.removeItem('userInfo')
   dispatch({ type: USER_LOGOUT })
-  await axios.get('/api/v1/user/logout')
+  await axios.get('/api/v1/users/logout')
+}
+
+export const updateMe = (firstName, lastName, email) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({
+      type: UPDATE_ME_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.patch(
+      '/api/v1/users/updateMe',
+      { firstName, lastName, email },
+      config
+    )
+
+    const user = data.data.user
+    user.token = userInfo.token
+
+    dispatch({
+      type: UPDATE_ME_SUCCESS,
+      payload: user,
+    })
+
+    localStorage.setItem('userInfo', JSON.stringify(user))
+  } catch (error) {
+    dispatch({
+      type: UPDATE_ME_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
 }

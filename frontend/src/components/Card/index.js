@@ -39,7 +39,7 @@ const Card = ({ cardType, history }) => {
     if (userInfo) {
       history.push('/')
     }
-  }, [userInfo, dispatch, error, loginError])
+  }, [userInfo, dispatch, error, loginError, history])
 
   return (
     <Container>
