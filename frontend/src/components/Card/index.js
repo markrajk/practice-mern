@@ -9,7 +9,7 @@ import Loader from '../Loader'
 const Card = ({ cardType, history }) => {
   const dispatch = useDispatch()
   const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo, loading: loginLoading } = userLogin
+  const { userInfo, loading: loginLoading, error: loginError } = userLogin
 
   const userSignup = useSelector((state) => state.userSignup)
   const { loading, error } = userSignup
@@ -28,10 +28,18 @@ const Card = ({ cardType, history }) => {
   }
 
   useEffect(() => {
+    if (error) {
+      alert(error)
+    }
+
+    if (loginError) {
+      alert(loginError)
+    }
+
     if (userInfo) {
       history.push('/')
     }
-  }, [userInfo, dispatch])
+  }, [userInfo, dispatch, error, loginError])
 
   return (
     <Container>
