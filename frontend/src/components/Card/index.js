@@ -59,7 +59,11 @@ const Card = ({ cardType, history }) => {
             onChange={(e) => setPassword(e.currentTarget.value)}
           />
           <CardButton onClick={loginSubmitHandler}>
-            {loginLoading ? <Loader loading={loginLoading} /> : 'Submit'}
+            {loginLoading ? (
+              <Loader color="#fff" loading={loginLoading} />
+            ) : (
+              'Submit'
+            )}
           </CardButton>
           <p>
             Dont have account yet? <Link to="/signup">Sign up.</Link>{' '}
@@ -95,7 +99,7 @@ const Card = ({ cardType, history }) => {
             onChange={(e) => setPassword(e.currentTarget.value)}
           />
           <CardButton onClick={signupSubmitHandler}>
-            {loading ? <Loader loading={loading} /> : 'Submit'}
+            {loading ? <Loader color="#fff" loading={loading} /> : 'Submit'}
           </CardButton>
           <p>
             Already have an account? <Link to="/login">Log in.</Link>{' '}

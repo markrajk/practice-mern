@@ -2,7 +2,7 @@
 export default {
   colors: {
     background: '#f9f9f9',
-    black: '#000',
+    black: '#292929',
     white: '#fff',
   },
   transition: '0.3s',

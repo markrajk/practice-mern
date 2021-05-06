@@ -7,6 +7,7 @@ import AppError from './utils/appError.js'
 import globalErrorHandler from './controllers/errorController.js'
 
 import userRoutes from './routes/userRoutes.js'
+import postRoutes from './routes/postRoutes.js'
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/api/v1/users/', userRoutes)
+app.use('/api/v1/posts/', postRoutes)
 
 const __dirname = path.resolve()
 

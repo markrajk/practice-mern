@@ -3,12 +3,16 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Card from './components/Card'
 import Main from './components/Main'
 import Profile from './components/Profile'
+import Header from './components/Header'
+import Wall from './components/Wall'
 
 const App = () => {
   return (
     <Router>
+      <Header />
       <Main>
-        <Route exact path="/" component={Profile} />
+        <Route exact path="/" component={Wall} />
+        <Route exact path="/me" component={Profile} />
         <Route
           exact
           path="/login"

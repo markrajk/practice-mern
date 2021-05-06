@@ -3,8 +3,6 @@ import styled, { css } from 'styled-components'
 export const Container = styled.div`
   ${({ theme }) => css`
     padding: 2em;
-    max-width: 50em;
-    width: 100%;
     height: fit-content;
     display: flex;
     flex-direction: column;
