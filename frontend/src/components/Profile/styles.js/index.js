@@ -1,14 +1,26 @@
 import styled, { css } from 'styled-components'
 
-export const Container = styled.div`
+export const Wrapper = styled.div`
   ${({ theme }) => css`
     width: 100%;
+    height: 100%;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  `}
+`
+
+export const Container = styled.div`
+  ${({ theme }) => css`
+    /* width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    text-align: center; */
   `}
 `
 

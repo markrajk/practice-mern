@@ -20,7 +20,7 @@ const Header = () => {
         </NavLink>
         {userInfo && (
           <NavLink>
-            <Link to="/me">
+            <Link to={`/users/${userInfo._id}`}>
               {userInfo.firstName} {userInfo.lastName}
             </Link>
           </NavLink>

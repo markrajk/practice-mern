@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { listPosts, createPost, deletePost } from '../../actions/postActions'
 import { Container, PostCard, CreatePostButton, PostModal } from './styles'
 import Loader from '../Loader'
 
-const Wall = ({ history }) => {
+const Wall = ({ history, match }) => {
   const dispatch = useDispatch()
   const postList = useSelector((state) => state.postList)
   const { posts, error, loading } = postList
@@ -22,7 +23,7 @@ const Wall = ({ history }) => {
   const [postMessage, setPostMessage] = useState(true)
 
   const submitHandler = () => {
-    dispatch(createPost(postMessage))
+    dispatch(createPost(postMessage, match.params.id))
     setModalOpen(false)
   }
 
@@ -31,10 +32,12 @@ const Wall = ({ history }) => {
   }
 
   useEffect(() => {
-    if (success || posts || successDelete) {
-      dispatch(listPosts())
+    if (!userInfo) {
+      history.push('/login')
+    } else if (success || posts || successDelete) {
+      dispatch(listPosts(match.params.id))
     }
-  }, [dispatch, success, successDelete])
+  }, [userInfo, dispatch, success, successDelete])
 
   // useEffect(() => {
   //   dispatch(listPosts())
@@ -43,13 +46,13 @@ const Wall = ({ history }) => {
   return (
     <>
       <Container>
-        {userInfo && (
+        {match.params.id && (
           <CreatePostButton onClick={(e) => setModalOpen(true)}>
             Create New Post
           </CreatePostButton>
         )}
 
-        {!loading ? (
+        {posts && !loading ? (
           posts.map((post) => (
             <PostCard onClick={(e) => clickHandler(post._id)} key={post._id}>
               <p>{post.message}</p>
@@ -72,4 +75,4 @@ const Wall = ({ history }) => {
   )
 }
 
-export default Wall
+export default withRouter(Wall)

@@ -15,6 +15,11 @@ export const setPostUserIds = (req, res, next) => {
   next()
 }
 
+export const setPostReceiverIds = (req, res, next) => {
+  if (req.params.id) req.body.receiver = req.params.id
+  next()
+}
+
 export const getAllPosts = getAll(Post, { path: 'user' })
 export const getPost = getOne(Post, { path: 'user' })
 export const createPost = createOne(Post)

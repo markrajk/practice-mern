@@ -5,7 +5,14 @@ import APIFeatures from '../utils/apiFeatures.js'
 export const getAll = (Model, popOptions) =>
   catchAsync(async (req, res) => {
     let filter = {}
-    if (req.params.postId) filter = { tour: req.params.postId }
+    // console.log(req.params.userId, 'FACTORY req.params.userId')
+    // console.log(req.user, 'FACTORY req.user')
+    if (req.params.userId && req.user)
+      filter = {
+        // $or: [{ user: req.params.userId }],
+        $or: [{ user: req.params.userId }, { receiver: req.params.userId }],
+        // user: req.params.userId,
+      }
 
     //EXECUTE QUERY
     const features = new APIFeatures(Model.find(filter), req.query)

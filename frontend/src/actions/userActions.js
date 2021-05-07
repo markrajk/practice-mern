@@ -10,7 +10,47 @@ import {
   UPDATE_ME_REQUEST,
   UPDATE_ME_SUCCESS,
   UPDATE_ME_FAIL,
+  USER_GET_ONE_REQUEST,
+  USER_GET_ONE_SUCCESS,
+  USER_GET_ONE_FAIL,
 } from '../constants/userConstants'
+
+export const getUser = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_GET_ONE_REQUEST,
+    })
+
+    // const {
+    //   userLogin: { userInfo },
+    // } = getState()
+
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${userInfo.token}`,
+    //   },
+    // }
+
+    const { data } = await axios.get(`/api/v1/users/${id}`)
+
+    const user = data.data.data
+
+    console.log(user, 'USER!!!!!')
+    dispatch({
+      type: USER_GET_ONE_SUCCESS,
+      payload: user,
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_GET_ONE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
 
 export const signup = (firstName, lastName, email, password) => async (
   dispatch

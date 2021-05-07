@@ -10,12 +10,13 @@ import {
 import { protect } from '../middlewares/authMiddlewares.js'
 
 const router = express.Router()
-
-router.route('/').get(getAllPosts).post(protect, setPostUserIds, createPost)
+router.route('/').get(protect, getAllPosts)
 router
   .route('/:id')
   .get(getPost)
   .patch(protect, updatePost)
   .delete(protect, deletePost)
+
+router.route('/users/:userId').get(protect, getAllPosts)
 
 export default router

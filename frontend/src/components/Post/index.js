@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { getPost, deletePost, updatePost } from '../../actions/postActions'
 import { Container, Message, MessageInfo, Footer, FooterButton } from './styles'
 import Loader from '../Loader'
@@ -55,10 +56,13 @@ const Post = ({ match, history }) => {
                 year: 'numeric',
               })}
             </span>
-            <span className="creator">
+            <Link
+              to={post.user ? `/users/${post.user._id}` : ''}
+              className="creator"
+            >
               by{' '}
               {post.user ? `${post.user.firstName} ${post.user.lastName}` : ''}
-            </span>
+            </Link>
           </MessageInfo>
 
           {post.user && userInfo && post.user._id === userInfo._id && (

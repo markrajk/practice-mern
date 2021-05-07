@@ -13,7 +13,7 @@ const App = () => {
       <Header />
       <Main>
         <Route exact path="/" component={Wall} />
-        <Route exact path="/me" component={Profile} />
+
         <Route
           exact
           path="/login"
@@ -24,6 +24,7 @@ const App = () => {
           path="/signup"
           render={(props) => <Card {...props} cardType="signup" />}
         />
+        <Route exact path="/users/:id" component={Profile} />
         <Route exact path="/posts/:id" component={Post} />
       </Main>
     </Router>

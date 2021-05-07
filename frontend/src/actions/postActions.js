@@ -17,11 +17,23 @@ import {
   UPDATE_POST_FAIL,
 } from '../constants/postConstants'
 
-export const listPosts = () => async (dispatch) => {
+export const listPosts = (userId) => async (dispatch, getState) => {
   try {
     dispatch({ type: POST_LIST_REQUEST })
 
-    const { data } = await axios.get('/api/v1/posts')
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const route = userId ? `/api/v1/posts/users/${userId}` : '/api/v1/posts/'
+
+    const { data } = await axios.get(route, config)
 
     const posts = data.data.data
 
@@ -58,7 +70,10 @@ export const getPost = (id) => async (dispatch) => {
   }
 }
 
-export const createPost = (message) => async (dispatch, getState) => {
+export const createPost = (message, receiverId) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({ type: CREATE_POST_REQUEST })
 
@@ -74,10 +89,13 @@ export const createPost = (message) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.post('/api/v1/posts/', { message }, config)
+    const { data } = await axios.post(
+      `/api/v1/users/${receiverId}/posts`,
+      { message },
+      config
+    )
 
     const post = data.data.data
-    const updatedPosts = { ...posts, post }
 
     dispatch({
       type: CREATE_POST_SUCCESS,
