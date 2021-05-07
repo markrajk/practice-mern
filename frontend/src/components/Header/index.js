@@ -1,11 +1,17 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Container, Nav, NavLink } from './styles'
 import { Link } from 'react-router-dom'
+import { logout } from '../../actions/userActions'
 
 const Header = () => {
+  const dispatch = useDispatch()
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
+
+  const handleLougout = () => {
+    dispatch(logout())
+  }
   return (
     <Container>
       <Nav>
@@ -21,7 +27,9 @@ const Header = () => {
         )}
         <NavLink>
           {userInfo ? (
-            <Link to="/login">Log Out</Link>
+            <Link to="/#" onClick={handleLougout}>
+              Log Out
+            </Link>
           ) : (
             <Link to="/login">Log In</Link>
           )}

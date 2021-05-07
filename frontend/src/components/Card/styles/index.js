@@ -8,10 +8,10 @@ export const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    border-radius: 15px;
+    border: ${theme.border};
+    border-radius: ${theme.borderRadius};
+    box-shadow: ${theme.boxShadow};
     background-color: ${theme.colors.white};
-    border: 1px solid #ccc;
-    box-shadow: 5px 5px 15px 5px #959595;
   `}
 `
 

@@ -6,6 +6,15 @@ import {
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
+  GET_POST_REQUEST,
+  GET_POST_SUCCESS,
+  GET_POST_FAIL,
+  DELETE_POST_REQUEST,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_FAIL,
+  UPDATE_POST_REQUEST,
+  UPDATE_POST_SUCCESS,
+  UPDATE_POST_FAIL,
 } from '../constants/postConstants'
 
 export const listPosts = () => async (dispatch) => {
@@ -20,6 +29,27 @@ export const listPosts = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: POST_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const getPost = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_POST_REQUEST })
+
+    const { data } = await axios.get(`/api/v1/posts/${id}`)
+
+    const post = data.data.data
+    console.log(post, 'POST!!!!!!!!!!!!!!!!!!!')
+
+    dispatch({ type: GET_POST_SUCCESS, payload: post })
+  } catch (error) {
+    dispatch({
+      type: GET_POST_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -46,15 +76,86 @@ export const createPost = (message) => async (dispatch, getState) => {
 
     const { data } = await axios.post('/api/v1/posts/', { message }, config)
 
-    const post = data.data
+    const post = data.data.data
+    const updatedPosts = { ...posts, post }
 
     dispatch({
       type: CREATE_POST_SUCCESS,
       payload: post,
     })
+    // console.log(updatedPosts)
+    // dispatch({ type: POST_LIST_SUCCESS, payload: updatedPosts })
   } catch (error) {
     dispatch({
       type: CREATE_POST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const updatePost = (postId, message) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: UPDATE_POST_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.patch(
+      `/api/v1/posts/${postId}`,
+      { message },
+      config
+    )
+    const post = data.data.data
+
+    dispatch({
+      type: UPDATE_POST_SUCCESS,
+      payload: post,
+    })
+  } catch (error) {
+    dispatch({
+      type: UPDATE_POST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const deletePost = (postId) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: DELETE_POST_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    await axios.delete(`/api/v1/posts/${postId}`, config)
+
+    dispatch({
+      type: DELETE_POST_SUCCESS,
+    })
+  } catch (error) {
+    dispatch({
+      type: DELETE_POST_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

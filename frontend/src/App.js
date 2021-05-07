@@ -5,6 +5,7 @@ import Main from './components/Main'
 import Profile from './components/Profile'
 import Header from './components/Header'
 import Wall from './components/Wall'
+import Post from './components/Post'
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           path="/signup"
           render={(props) => <Card {...props} cardType="signup" />}
         />
+        <Route exact path="/posts/:id" component={Post} />
       </Main>
     </Router>
   )

@@ -18,7 +18,7 @@ export const CreatePostButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 4em;
+    height: 7rem;
     font-size: 1.8em;
     background-color: ${theme.colors.black};
     color: ${theme.colors.white};

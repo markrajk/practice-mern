@@ -20,11 +20,11 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 // Middleware to log cookies and time of req
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString()
-  console.log(req.cookies)
-  next()
-})
+// app.use((req, res, next) => {
+//   req.requestTime = new Date().toISOString()
+//   console.log(req.cookies)
+//   next()
+// })
 
 app.use('/api/v1/users/', userRoutes)
 app.use('/api/v1/posts/', postRoutes)
