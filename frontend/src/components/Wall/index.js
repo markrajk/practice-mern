@@ -15,6 +15,9 @@ const Wall = ({ history }) => {
   const deletedPost = useSelector((state) => state.deletePost)
   const { success: successDelete } = deletedPost
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   const [modalOpen, setModalOpen] = useState(false)
   const [postMessage, setPostMessage] = useState(true)
 
@@ -40,9 +43,12 @@ const Wall = ({ history }) => {
   return (
     <>
       <Container>
-        <CreatePostButton onClick={(e) => setModalOpen(true)}>
-          Create New Post
-        </CreatePostButton>
+        {userInfo && (
+          <CreatePostButton onClick={(e) => setModalOpen(true)}>
+            Create New Post
+          </CreatePostButton>
+        )}
+
         {!loading ? (
           posts.map((post) => (
             <PostCard onClick={(e) => clickHandler(post._id)} key={post._id}>

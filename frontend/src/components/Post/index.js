@@ -24,13 +24,15 @@ const Post = ({ match, history }) => {
   }
 
   const handleUpdate = async (id, message) => {
+    if (message === '') {
+      message = post.message
+    }
     dispatch(updatePost(id, message))
     setEdit(false)
   }
 
   useEffect(() => {
     dispatch(getPost(match.params.id))
-    setUpdated(post.message)
   }, [dispatch, success])
 
   return (
