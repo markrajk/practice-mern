@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { listPosts, createPost, deletePost } from '../../actions/postActions'
+import { listPosts, createPost } from '../../actions/postActions'
 import { Container, PostCard, CreatePostButton, PostModal } from './styles'
 import Loader from '../Loader'
 
 const Wall = ({ history, match }) => {
   const dispatch = useDispatch()
   const postList = useSelector((state) => state.postList)
-  const { posts, error, loading } = postList
+  const { posts, loading } = postList
 
   const createdPost = useSelector((state) => state.createPost)
-  const { success, loading: createLoading } = createdPost
+  const { success } = createdPost
 
   const deletedPost = useSelector((state) => state.deletePost)
   const { success: successDelete } = deletedPost
@@ -34,10 +34,14 @@ const Wall = ({ history, match }) => {
   useEffect(() => {
     if (!userInfo) {
       history.push('/login')
-    } else if (success || posts || successDelete) {
+    } else {
       dispatch(listPosts(match.params.id))
     }
-  }, [userInfo, dispatch, success, successDelete])
+
+    // else if (success || posts || successDelete) {
+    //   dispatch(listPosts(match.params.id))
+    // }
+  }, [userInfo, dispatch, success, successDelete, history, match.params.id])
 
   // useEffect(() => {
   //   dispatch(listPosts())

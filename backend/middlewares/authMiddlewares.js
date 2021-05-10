@@ -43,3 +43,8 @@ export const protect = catchAsync(async (req, res, next) => {
   req.user = currentUser
   next()
 })
+
+export const setUserIds = (req, res, next) => {
+  if (!req.body.user) req.body.user = req.user.id
+  next()
+}

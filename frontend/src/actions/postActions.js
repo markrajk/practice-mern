@@ -56,7 +56,6 @@ export const getPost = (id) => async (dispatch) => {
     const { data } = await axios.get(`/api/v1/posts/${id}`)
 
     const post = data.data.data
-    console.log(post, 'POST!!!!!!!!!!!!!!!!!!!')
 
     dispatch({ type: GET_POST_SUCCESS, payload: post })
   } catch (error) {
@@ -79,7 +78,6 @@ export const createPost = (message, receiverId) => async (
 
     const {
       userLogin: { userInfo },
-      postList: { posts },
     } = getState()
 
     const config = {

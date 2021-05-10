@@ -9,7 +9,7 @@ import {
   Buttons,
   Editable,
 } from './styles.js'
-import { logout, updateMe, getUser } from '../../actions/userActions'
+import { updateMe, getUser } from '../../actions/userActions'
 import Wall from '../Wall'
 
 const Profile = ({ history, match }) => {
@@ -24,10 +24,6 @@ const Profile = ({ history, match }) => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
-
-  const logoutHandler = () => {
-    dispatch(logout())
-  }
 
   const saveHandler = () => {
     dispatch(updateMe(firstName, lastName, email))

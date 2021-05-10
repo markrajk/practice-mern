@@ -14,6 +14,11 @@ import {
   deletePostReducer,
   updatePostReducer,
 } from './reducers/postReducers'
+import {
+  createCommentReducer,
+  updateCommentReducer,
+  deleteCommentReducer,
+} from './reducers/commentReducers'
 
 const reducer = combineReducers({
   userSignup: userSignupReducer,
@@ -25,6 +30,9 @@ const reducer = combineReducers({
   getPost: getPostReducer,
   deletePost: deletePostReducer,
   updatePost: updatePostReducer,
+  createComment: createCommentReducer,
+  updateComment: updateCommentReducer,
+  deleteComment: deleteCommentReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

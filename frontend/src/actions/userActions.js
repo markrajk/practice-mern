@@ -36,7 +36,6 @@ export const getUser = (id) => async (dispatch) => {
 
     const user = data.data.data
 
-    console.log(user, 'USER!!!!!')
     dispatch({
       type: USER_GET_ONE_SUCCESS,
       payload: user,

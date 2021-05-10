@@ -2,14 +2,17 @@ import express from 'express'
 import {
   getAllPosts,
   getPost,
-  createPost,
   updatePost,
   deletePost,
-  setPostUserIds,
 } from '../controllers/postController.js'
 import { protect } from '../middlewares/authMiddlewares.js'
 
+import commentRouter from './commentRoutes.js'
+
 const router = express.Router()
+
+router.use('/:postId/comments', commentRouter)
+
 router.route('/').get(protect, getAllPosts)
 router
   .route('/:id')

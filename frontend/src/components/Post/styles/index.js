@@ -63,6 +63,36 @@ export const Footer = styled.div`
   justify-content: flex-start;
 `
 
+export const CommentInput = styled.div`
+  ${({ theme }) => css`
+    padding: 1em 0;
+    display: none;
+
+    & input {
+      padding: 0.8em 1em;
+      margin-bottom: 1em;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: 1.4em;
+      color: ${theme.colors.black};
+      border-radius: 8px;
+      outline: none !important;
+
+      &::placeholder {
+        opacity: 0.7;
+      }
+    }
+
+    & div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  `}
+`
+
 const StyledFooterButton = styled.button`
   ${({ theme }) => css`
     padding: 0.7em 2em;
@@ -73,8 +103,8 @@ const StyledFooterButton = styled.button`
     letter-spacing: 0.5px;
     font-weight: 600;
     border-radius: 5px;
-    background-color: ${({ update }) =>
-      update ? theme.colors.blue : theme.colors.red};
+    background-color: ${({ update, comment }) =>
+      update ? theme.colors.blue : comment ? 'gray' : theme.colors.red};
     color: ${theme.colors.white};\
     outline: none;
     border: 0;
@@ -85,16 +115,17 @@ const StyledFooterButton = styled.button`
       opacity: .85;
     }
 
-    &:first-of-type {
+    &:not(:last-of-type) {
       margin-right: .7em;
     }
   `}
 `
 
-export const FooterButton = ({ update, text, onClick }) => {
+export const FooterButton = ({ update, comment, text, onClick, children }) => {
   return (
-    <StyledFooterButton update={update} onClick={onClick}>
-      {text}
+    <StyledFooterButton update={update} comment={comment} onClick={onClick}>
+      {text && text}
+      {children}
     </StyledFooterButton>
   )
 }

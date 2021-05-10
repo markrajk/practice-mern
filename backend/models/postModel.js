@@ -16,6 +16,12 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Post must contain message.'],
     },
+    comments: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Comment',
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,

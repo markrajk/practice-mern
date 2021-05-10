@@ -2,11 +2,10 @@ import express from 'express'
 import { signup, login, logout } from '../controllers/authController.js'
 import { getMe, getUser, updateMe } from '../controllers/userController.js'
 import {
-  setPostUserIds,
   setPostReceiverIds,
   createPost,
 } from '../controllers/postController.js'
-import { protect } from '../middlewares/authMiddlewares.js'
+import { protect, setUserIds } from '../middlewares/authMiddlewares.js'
 
 const router = express.Router()
 
@@ -21,6 +20,6 @@ router.route('/:id').get(getUser)
 
 router
   .route('/:id/posts')
-  .post(protect, setPostUserIds, setPostReceiverIds, createPost)
+  .post(protect, setUserIds, setPostReceiverIds, createPost)
 
 export default router
