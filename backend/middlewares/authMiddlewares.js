@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import jwt from 'jsonwebtoken'
 import User from '../models/userModel.js'
+import Team from '../models/teamModel.js'
 
 export const protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it exists
@@ -44,7 +45,32 @@ export const protect = catchAsync(async (req, res, next) => {
   next()
 })
 
+export const restrictToTeamRoles = (...roles) =>
+  catchAsync(async (req, res, next) => {
+    const team = await Team.findById(req.params.id)
+    console.log(toString(team.owner) === toString(req.user._id), roles)
+
+    if (
+      roles.includes('owner') &&
+      toString(team.owner) === toString(req.user._id)
+    )
+      return next()
+    if (roles.includes('admin') && team.admins.includes(req.user._id))
+      return next()
+    if (roles.includes('member') && team.members.includes(req.user._id))
+      return next()
+
+    return next(
+      new AppError('You do not have permission to perform this action', 403)
+    )
+  })
+
 export const setUserIds = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id
+  next()
+}
+
+export const setOwnerIds = (req, res, next) => {
+  if (!req.body.user) req.body.owner = req.user.id
   next()
 }

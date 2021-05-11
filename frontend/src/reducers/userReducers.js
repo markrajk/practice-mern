@@ -12,6 +12,9 @@ import {
   USER_GET_ONE_REQUEST,
   USER_GET_ONE_SUCCESS,
   USER_GET_ONE_FAIL,
+  USER_GET_ALL_REQUEST,
+  USER_GET_ALL_SUCCESS,
+  USER_GET_ALL_FAIL,
 } from '../constants/userConstants'
 
 export const getUserReducer = (state = {}, action) => {
@@ -21,6 +24,19 @@ export const getUserReducer = (state = {}, action) => {
     case USER_GET_ONE_SUCCESS:
       return { loading: false, userInfo: action.payload }
     case USER_GET_ONE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const getAllUserReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_GET_ALL_REQUEST:
+      return { loading: true }
+    case USER_GET_ALL_SUCCESS:
+      return { loading: false, users: action.payload }
+    case USER_GET_ALL_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

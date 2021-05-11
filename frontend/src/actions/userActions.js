@@ -13,6 +13,9 @@ import {
   USER_GET_ONE_REQUEST,
   USER_GET_ONE_SUCCESS,
   USER_GET_ONE_FAIL,
+  USER_GET_ALL_REQUEST,
+  USER_GET_ALL_SUCCESS,
+  USER_GET_ALL_FAIL,
 } from '../constants/userConstants'
 
 export const getUser = (id) => async (dispatch) => {
@@ -43,6 +46,45 @@ export const getUser = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_GET_ONE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const getAllUsers = (queryStr) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_GET_ALL_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.get(
+      `/api/v1/users${queryStr ? `?string=${queryStr}` : ''}`,
+      config
+    )
+
+    const users = data.data.data
+
+    dispatch({
+      type: USER_GET_ALL_SUCCESS,
+      payload: users,
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_GET_ALL_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

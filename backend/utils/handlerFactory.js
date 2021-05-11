@@ -20,6 +20,7 @@ export const getAll = (Model, popOptions) =>
       .sort()
       .limitFields()
       .paginate()
+      .search()
 
     const document = await features.query.populate(popOptions)
 

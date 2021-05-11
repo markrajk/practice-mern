@@ -6,6 +6,7 @@ import {
   userLoginReducer,
   updateMeReducer,
   getUserReducer,
+  getAllUserReducer,
 } from './reducers/userReducers'
 import {
   postListReducer,
@@ -19,12 +20,18 @@ import {
   updateCommentReducer,
   deleteCommentReducer,
 } from './reducers/commentReducers'
+import {
+  createTeamReducer,
+  getTeamReducer,
+  updateTeamReducer,
+} from './reducers/teamReducers'
 
 const reducer = combineReducers({
   userSignup: userSignupReducer,
   userLogin: userLoginReducer,
   updateMe: updateMeReducer,
   getUser: getUserReducer,
+  getAllUser: getAllUserReducer,
   postList: postListReducer,
   createPost: createPostReducer,
   getPost: getPostReducer,
@@ -33,6 +40,9 @@ const reducer = combineReducers({
   createComment: createCommentReducer,
   updateComment: updateCommentReducer,
   deleteComment: deleteCommentReducer,
+  getTeam: getTeamReducer,
+  createTeam: createTeamReducer,
+  updateTeam: updateTeamReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

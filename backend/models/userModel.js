@@ -2,29 +2,48 @@ import mongoose from 'mongoose'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
 
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: [true, 'User must have first name.'],
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, 'User must have first name.'],
+    },
+    lastName: {
+      type: String,
+      required: [true, 'User must have last name.'],
+    },
+    email: {
+      type: String,
+      required: [true, 'User must have a email address.'],
+      unique: true,
+      lowercase: true,
+      validate: [validator.isEmail, 'Please provide a valid email'],
+    },
+    password: {
+      type: String,
+      required: [true, 'User must have a password.'],
+      minLenth: 8,
+      select: false,
+    },
   },
-  lastName: {
-    type: String,
-    required: [true, 'User must have last name.'],
-  },
-  email: {
-    type: String,
-    required: [true, 'User must have a email address.'],
-    unique: true,
-    lowercase: true,
-    validate: [validator.isEmail, 'Please provide a valid email'],
-  },
-  password: {
-    type: String,
-    required: [true, 'User must have a password.'],
-    minLenth: 8,
-    select: false,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+)
+
+userSchema.virtual('fullName').get(function () {
+  return `${this.firstName} ${this.lastName}`
 })
+
+userSchema.virtual('teams', {
+  ref: 'Team',
+  foreignField: 'members',
+  localField: '_id',
+})
+
+// userSchema.index({ firstName: 'text', lastName: 'text', email: 'text' })
+userSchema.index({ firstName: 1, lastName: 1, email: 1 }, { unique: true })
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()

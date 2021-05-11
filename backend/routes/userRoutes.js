@@ -1,6 +1,11 @@
 import express from 'express'
 import { signup, login, logout } from '../controllers/authController.js'
-import { getMe, getUser, updateMe } from '../controllers/userController.js'
+import {
+  getMe,
+  getUser,
+  updateMe,
+  getAllUsers,
+} from '../controllers/userController.js'
 import {
   setPostReceiverIds,
   createPost,
@@ -16,6 +21,7 @@ router.route('/logout').get(logout)
 router.get('/me', protect, getMe, getUser)
 router.patch('/updateMe', protect, updateMe)
 
+router.route('/').get(getAllUsers)
 router.route('/:id').get(getUser)
 
 router

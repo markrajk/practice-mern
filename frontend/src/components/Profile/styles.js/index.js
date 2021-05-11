@@ -41,6 +41,7 @@ export const SubTitle = styled.h3`
 `
 
 export const Buttons = styled.div`
+  margin-bottom: 2em;
   display: flex;
   align-items: center;
   justify-content: center;

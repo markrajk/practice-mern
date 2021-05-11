@@ -1,7 +1,7 @@
 import User from '../models/userModel.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
-import { getOne, updateOne } from '../utils/handlerFactory.js'
+import { getOne, updateOne, getAll } from '../utils/handlerFactory.js'
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {}
@@ -41,4 +41,11 @@ export const updateMe = catchAsync(async (req, res, next) => {
   })
 })
 
-export const getUser = getOne(User)
+export const getAllUsers = getAll(User, {
+  path: 'teams',
+  options: { select: { name: 1 } },
+})
+export const getUser = getOne(User, {
+  path: 'teams',
+  options: { select: { name: 1 } },
+})

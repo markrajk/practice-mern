@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import {
   Wrapper,
   Container,
@@ -18,7 +19,7 @@ const Profile = ({ history, match }) => {
   const { userInfo: userInfoLogin } = userLogin
 
   const gotUser = useSelector((state) => state.getUser)
-  const { userInfo } = gotUser
+  const { userInfo, loading } = gotUser
 
   const [edit, setEdit] = useState(false)
   const [firstName, setFirstName] = useState('')
@@ -31,6 +32,7 @@ const Profile = ({ history, match }) => {
   }
 
   useEffect(() => {
+    console.log(userInfo)
     const getUserStart = async () => {
       await dispatch(getUser(match.params.id))
     }
@@ -91,6 +93,19 @@ const Profile = ({ history, match }) => {
                 </Buttons>
               )}
           </>
+        )}
+
+        {userInfo && userInfo.teams && userInfo.teams[0] ? (
+          <>
+            <h1 style={{ marginBottom: '15px' }}>Teams:</h1>
+            {userInfo.teams.map((team) => (
+              <h2 style={{ marginBottom: '10px' }}>
+                <Link to={`/teams/${team._id}`}>{team.name}</Link>
+              </h2>
+            ))}
+          </>
+        ) : (
+          <>{!loading && <h2>Currently not part of any team</h2>}</>
         )}
       </Container>
       <Wall />

@@ -6,6 +6,8 @@ import Profile from './components/Profile'
 import Header from './components/Header'
 import Wall from './components/Wall'
 import Post from './components/Post'
+import CreateTeamScreen from './screens/CreateTeam'
+import TeamScreen from './screens/TeamScreen'
 
 const App = () => {
   return (
@@ -26,6 +28,8 @@ const App = () => {
         />
         <Route exact path="/users/:id" component={Profile} />
         <Route exact path="/posts/:id" component={Post} />
+        <Route exact path="/createTeam" component={CreateTeamScreen} />
+        <Route exact path="/teams/:id" component={TeamScreen} />
       </Main>
     </Router>
   )
