@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getTeam, updateTeam } from '../../actions/teamActions'
-import { Container, Title, Table } from './styles'
+import { getTeam, updateTeam, deleteTeam } from '../../actions/teamActions'
+import { Container, Header, Title, Table } from './styles'
 
-const TeamScreen = ({ match }) => {
+const TeamScreen = ({ match, history }) => {
   const dispatch = useDispatch()
 
   const gotTeam = useSelector((state) => state.getTeam)
   const { team, loading, error } = gotTeam
 
   const updatedTeam = useSelector((state) => state.updateTeam)
-  const { success } = updatedTeam
+  const { success, error: updateError } = updatedTeam
 
-  const [teamName, setTeamName] = useState('')
-  const [teamMembers, setTeamMembers] = useState([])
+  const deletedTeam = useSelector((state) => state.deleteTeam)
+  const { error: deleteError } = deletedTeam
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   useEffect(() => {
-    // const initializeTeam = async () => {
-    //   await dispatch(getTeam(match.params.id))
-    // }
-
     if (!team || success) {
       dispatch(getTeam(match.params.id))
     }
-
-    // if (!loading && !error) {
-    //   initializeTeam()
-    // }
+    error && alert(error)
+    deleteError && alert(deleteError)
+    updateError && alert(updateError)
   }, [dispatch, match.params.id, success])
 
   const handleUserDelete = (id) => {
-    // setTeamMembers(team.members.map((member) => member._id))
+    if (!window.confirm('Are you sure you want to delete this member')) return
     const newArr = team.members
       .map((member) => member._id)
       .filter((member) => member !== id)
@@ -43,9 +41,22 @@ const TeamScreen = ({ match }) => {
     dispatch(updateTeam(match.params.id, { name, members }))
   }
 
+  const deleteTeamHandler = () => {
+    if (window.confirm('Are you sure you want to delete this team?')) {
+      dispatch(deleteTeam(match.params.id))
+      history.push('/')
+    }
+  }
+
   return (
     <Container>
-      <Title>{team && team.name}</Title>
+      <Header>
+        <Title>{team && team.name}</Title>
+        {team && userInfo._id === team.owner._id && (
+          <button onClick={deleteTeamHandler}>Delete</button>
+        )}
+      </Header>
+
       {/* <button onClick={handleUpdate(team.name, teamMembers)}>Update</button> */}
       {team &&
         (team.members || team.admins) &&
@@ -59,7 +70,7 @@ const TeamScreen = ({ match }) => {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr key={team.owner._id}>
                 <td>
                   <Link to={`/users/${team.owner._id}`}>
                     {team.owner.fullName}
@@ -72,7 +83,7 @@ const TeamScreen = ({ match }) => {
               </tr>
               <>
                 {team.admins.map((admin) => (
-                  <tr>
+                  <tr key={admin._id}>
                     <td>{admin.fullName}</td>
                     <td>Admin</td>
                     <td>
@@ -83,7 +94,7 @@ const TeamScreen = ({ match }) => {
               </>
               <>
                 {team.members.map((member) => (
-                  <tr>
+                  <tr key={member._id}>
                     <td>
                       <Link to={`/users/${member._id}`}>{member.fullName}</Link>
                     </td>

@@ -8,6 +8,9 @@ import {
   TEAM_UPDATE_REQUEST,
   TEAM_UPDATE_SUCCESS,
   TEAM_UPDATE_FAIL,
+  TEAM_DELETE_REQUEST,
+  TEAM_DELETE_SUCCESS,
+  TEAM_DELETE_FAIL,
 } from '../constants/teamConstants'
 
 export const getTeamReducer = (state = {}, action) => {
@@ -43,6 +46,19 @@ export const updateTeamReducer = (state = {}, action) => {
     case TEAM_UPDATE_SUCCESS:
       return { loading: false, success: true, team: action.payload }
     case TEAM_UPDATE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const deleteTeamReducer = (state = {}, action) => {
+  switch (action.type) {
+    case TEAM_DELETE_REQUEST:
+      return { loading: true }
+    case TEAM_DELETE_SUCCESS:
+      return { loading: false, success: true }
+    case TEAM_DELETE_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

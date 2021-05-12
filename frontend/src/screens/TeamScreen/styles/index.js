@@ -10,11 +10,37 @@ export const Container = styled.div`
     box-shadow: ${theme.boxShadow};
   `}
 `
+export const Header = styled.div`
+  ${({ theme }) => css`
+    margin-bottom: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    & i {
+      margin-left: 0.6em;
+      font-size: 2.5em;
+    }
+
+    & button {
+      display: inline-block;
+      margin-left: auto;
+      padding: 0.6em 1.2em;
+      font-size: 1.6em;
+      font-weight: 600;
+      color: ${theme.colors.white};
+      background-color: ${theme.colors.red};
+      border-radius: 5px;
+      border: 0;
+      outline: none;
+      cursor: pointer;
+    }
+  `}
+`
 
 export const Title = styled.h1`
   ${({ theme }) => css`
     font-size: 3em;
-    margin-bottom: 1em;
     color: ${theme.colors.black};
     letter-spacing: 0.5px;
   `}

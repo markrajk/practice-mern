@@ -6,13 +6,16 @@ import {
   Container,
   Title,
   SubTitle,
-  InputContainer,
   Input,
   Label,
-  Button,
   ContentWrapper,
+  Buttons,
   SubmitButton,
+  CancelButton,
+  Members,
+  MemberItem,
 } from './styles'
+import BinIcon from '../../components/Icons/BinIcon'
 
 const CreateTeamScreen = ({ history }) => {
   const dispatch = useDispatch()
@@ -20,10 +23,19 @@ const CreateTeamScreen = ({ history }) => {
   const createdTeam = useSelector((state) => state.createTeam)
   const { team: teamCreated, success } = createdTeam
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   const [team, setTeam] = useState({ name: '', members: [] })
 
   const handleAddUser = (user) => {
-    setTeam({ ...team, members: [...team.members, user._id] })
+    if (team.members.includes(user) || userInfo._id === user._id) return
+    setTeam({ ...team, members: [...team.members, user] })
+  }
+
+  const handleDeleteUser = (user) => {
+    const updatedArr = team.members.filter((member) => member._id !== user._id)
+    setTeam({ ...team, members: updatedArr })
   }
 
   const handleTeamCreate = (team) => {
@@ -34,7 +46,6 @@ const CreateTeamScreen = ({ history }) => {
   }
 
   useEffect(() => {
-    console.log(team, 'FROM EFFECTS!')
     if (success && team) {
       history.push(`/teams/${teamCreated._id}`)
     }
@@ -46,19 +57,36 @@ const CreateTeamScreen = ({ history }) => {
         <Title>Create new team</Title>
         <SubTitle>Enter the fields bellow to create you team.</SubTitle>
 
-        <Label for="team-name">Team name</Label>
+        <Label htmlFor="team-name">Team name</Label>
         <Input
           type="text"
           id="team-name"
           onChange={(e) => setTeam({ ...team, name: e.currentTarget.value })}
         />
 
-        <Label for="search-box">Team members</Label>
+        <Label htmlFor="search-box">Team members</Label>
         <SearchBox addUser={handleAddUser} />
+      </ContentWrapper>
 
-        <SubmitButton onClick={(e) => handleTeamCreate(team)}>
-          Create team
-        </SubmitButton>
+      <Members>
+        {team &&
+          team.members.map((member) => (
+            <MemberItem key={member._id}>
+              <p>{member.fullName}</p>
+              <i onClick={(e) => handleDeleteUser(member)}>
+                <BinIcon />
+              </i>
+            </MemberItem>
+          ))}
+      </Members>
+
+      <ContentWrapper style={{ paddingTop: '3em', marginTop: 'auto' }}>
+        <Buttons>
+          <CancelButton onClick={(e) => history.push('/')}>Cancel</CancelButton>
+          <SubmitButton onClick={(e) => handleTeamCreate(team)}>
+            Create team
+          </SubmitButton>
+        </Buttons>
       </ContentWrapper>
     </Container>
   )

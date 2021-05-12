@@ -29,11 +29,12 @@ const SearchBox = ({ addUser }) => {
         onChange={(e) => handleChange(e.currentTarget.value)}
         // onBlur={(e) => setSearchFocus(false)}
         onFocus={(e) => setSearchFocus(true)}
+        autoComplete="off"
       />
       {users && users[0] && searchFocus && (
         <Results>
           {users.map((user) => (
-            <ResultsItem>
+            <ResultsItem key={user._id}>
               <p>
                 {user.firstName} {user.lastName}
               </p>

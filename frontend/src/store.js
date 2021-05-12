@@ -24,6 +24,7 @@ import {
   createTeamReducer,
   getTeamReducer,
   updateTeamReducer,
+  deleteTeamReducer,
 } from './reducers/teamReducers'
 
 const reducer = combineReducers({
@@ -43,6 +44,7 @@ const reducer = combineReducers({
   getTeam: getTeamReducer,
   createTeam: createTeamReducer,
   updateTeam: updateTeamReducer,
+  deleteTeam: deleteTeamReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

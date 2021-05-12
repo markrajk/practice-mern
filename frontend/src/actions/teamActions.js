@@ -9,6 +9,9 @@ import {
   TEAM_UPDATE_REQUEST,
   TEAM_UPDATE_SUCCESS,
   TEAM_UPDATE_FAIL,
+  TEAM_DELETE_REQUEST,
+  TEAM_DELETE_SUCCESS,
+  TEAM_DELETE_FAIL,
 } from '../constants/teamConstants'
 
 export const getTeam = (teamId) => async (dispatch, getState) => {
@@ -34,6 +37,37 @@ export const getTeam = (teamId) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: TEAM_GET_ONE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const createTeam = (team) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: TEAM_CREATE_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.post(`/api/v1/teams`, { ...team }, config)
+
+    const newTeam = data.data.data
+
+    dispatch({ type: TEAM_CREATE_SUCCESS, payload: newTeam })
+  } catch (error) {
+    dispatch({
+      type: TEAM_CREATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -77,9 +111,9 @@ export const updateTeam = (teamId, team) => async (dispatch, getState) => {
   }
 }
 
-export const createTeam = (team) => async (dispatch, getState) => {
+export const deleteTeam = (teamId) => async (dispatch, getState) => {
   try {
-    dispatch({ type: TEAM_CREATE_REQUEST })
+    dispatch({ type: TEAM_DELETE_REQUEST })
 
     const {
       userLogin: { userInfo },
@@ -92,14 +126,12 @@ export const createTeam = (team) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.post(`/api/v1/teams`, { ...team }, config)
+    await axios.delete(`/api/v1/teams/${teamId}`, config)
 
-    const newTeam = data.data.data
-
-    dispatch({ type: TEAM_CREATE_SUCCESS, payload: newTeam })
+    dispatch({ type: TEAM_DELETE_SUCCESS })
   } catch (error) {
     dispatch({
-      type: TEAM_CREATE_FAIL,
+      type: TEAM_DELETE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

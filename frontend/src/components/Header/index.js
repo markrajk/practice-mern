@@ -25,6 +25,11 @@ const Header = () => {
             </Link>
           </NavLink>
         )}
+        {userInfo && (
+          <NavLink>
+            <Link to={`/createTeam`}>Create Team</Link>
+          </NavLink>
+        )}
         <NavLink>
           {userInfo ? (
             <Link to="/#" onClick={handleLougout}>
