@@ -17,6 +17,7 @@ import {
 export const getAllTeams = getAll(Team, [
   { path: 'members' },
   { path: 'admins' },
+  { path: 'owner' },
 ])
 export const getTeam = getOne(Team, [
   { path: 'members' },

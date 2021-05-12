@@ -20,6 +20,13 @@ export const Header = styled.div`
     & i {
       margin-left: 0.6em;
       font-size: 2.5em;
+      color: ${theme.colors.black};
+      cursor: pointer;
+      transition: transform 0.1s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
 
     & button {
@@ -37,6 +44,31 @@ export const Header = styled.div`
     }
   `}
 `
+
+const StyledEditable = styled.span`
+  display: inline-block;
+  font-size: inherit;
+  color: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  background-color: transparent;
+  border: ${(props) =>
+    props.edit ? '1px solid black' : '1px solid transparent'};
+  outline: none !important;
+  border-radius: 5px;
+`
+export const Editable = ({ onInput, edit, children }) => {
+  return (
+    <StyledEditable
+      edit={edit}
+      suppressContentEditableWarning
+      contentEditable={edit}
+      onInput={onInput}
+    >
+      {children}
+    </StyledEditable>
+  )
+}
 
 export const Title = styled.h1`
   ${({ theme }) => css`

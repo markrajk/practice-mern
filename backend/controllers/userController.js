@@ -41,11 +41,30 @@ export const updateMe = catchAsync(async (req, res, next) => {
   })
 })
 
-export const getAllUsers = getAll(User, {
-  path: 'teams',
-  options: { select: { name: 1 } },
-})
-export const getUser = getOne(User, {
-  path: 'teams',
-  options: { select: { name: 1 } },
-})
+// export const getAllUsers = getAll(User, {
+//   path: 'member',
+//   options: { select: { name: 1 } },
+//   // path: 'admin',
+//   // options: { select: { name: 1 } },
+//   path: 'owner',
+//   options: { select: { name: 1 } },
+// })
+// export const getUser = getOne(User, {
+//   path: 'member',
+//   options: { select: { name: 1 } },
+//   // path: 'admin',
+//   // options: { select: { name: 1 } },
+//   path: 'owner',
+//   options: { select: { name: 1 } },
+// })
+
+export const getAllUsers = getAll(User, [
+  { path: 'member' },
+  { path: 'owner' },
+  { path: 'admin' },
+])
+export const getUser = getOne(User, [
+  { path: 'member' },
+  { path: 'owner' },
+  { path: 'admin' },
+])

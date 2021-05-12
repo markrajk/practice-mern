@@ -94,11 +94,10 @@ const Profile = ({ history, match }) => {
               )}
           </>
         )}
-
-        {userInfo && userInfo.teams && userInfo.teams[0] ? (
+        <h1 style={{ marginBottom: '15px' }}>Teams:</h1>
+        {/* {userInfo && userInfo.member && userInfo.member[0] ? (
           <>
-            <h1 style={{ marginBottom: '15px' }}>Teams:</h1>
-            {userInfo.teams.map((team) => (
+            {userInfo.member.map((team) => (
               <h2 style={{ marginBottom: '10px' }}>
                 <Link to={`/teams/${team._id}`}>{team.name}</Link>
               </h2>
@@ -106,7 +105,64 @@ const Profile = ({ history, match }) => {
           </>
         ) : (
           <>{!loading && <h2>Currently not part of any team</h2>}</>
+        )} */}
+        {userInfo && userInfo.member && userInfo.member[0] && (
+          <>
+            {userInfo.member.map((team) => (
+              <h2 style={{ marginBottom: '10px' }}>
+                <Link to={`/teams/${team._id}`}>{team.name} (member)</Link>
+              </h2>
+            ))}
+          </>
         )}
+
+        {userInfo && userInfo.admin && userInfo.admin[0] && (
+          <>
+            {userInfo.admin.map((team) => (
+              <h2 style={{ marginBottom: '10px' }}>
+                <Link to={`/teams/${team._id}`}>{team.name} (admin)</Link>
+              </h2>
+            ))}
+          </>
+        )}
+
+        {userInfo && userInfo.owner && userInfo.owner[0] && (
+          <>
+            {userInfo.owner.map((team) => (
+              <h2 style={{ marginBottom: '10px' }}>
+                <Link to={`/teams/${team._id}`}>{team.name} (owner)</Link>
+              </h2>
+            ))}
+          </>
+        )}
+
+        {/* {(userInfo && userInfo.member && userInfo.member[0] && (
+          <>
+            {userInfo.member.map((team) => (
+              <h2 style={{ marginBottom: '10px' }}>
+                <Link to={`/teams/${team._id}`}>{team.name} (member)</Link>
+              </h2>
+            ))}
+          </>
+        )) ||
+          (userInfo && userInfo.admin && userInfo.admin[0] && (
+            <>
+              {userInfo.admin.map((team) => (
+                <h2 style={{ marginBottom: '10px' }}>
+                  <Link to={`/teams/${team._id}`}>{team.name} (admin)</Link>
+                </h2>
+              ))}
+            </>
+          )) ||
+          (userInfo && userInfo.owner && userInfo.owner[0] && (
+            <>
+              {userInfo.owner.map((team) => (
+                <h2 style={{ marginBottom: '10px' }}>
+                  <Link to={`/teams/${team._id}`}>{team.name} (owner)</Link>
+                </h2>
+              ))}
+            </>
+          )) || <>{!loading && <h2>Currently not part of any team</h2>}</>} */}
       </Container>
       <Wall />
     </Wrapper>

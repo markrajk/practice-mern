@@ -36,10 +36,32 @@ userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`
 })
 
-userSchema.virtual('teams', {
+// userSchema.virtual('teams', {
+//   ref: 'Team',
+//   foreignField: 'members',
+//   localField: '_id',
+//   justOne: false,
+// })
+
+userSchema.virtual('member', {
   ref: 'Team',
   foreignField: 'members',
   localField: '_id',
+  justOne: false,
+})
+
+userSchema.virtual('admin', {
+  ref: 'Team',
+  foreignField: 'admins',
+  localField: '_id',
+  justOne: false,
+})
+
+userSchema.virtual('owner', {
+  ref: 'Team',
+  foreignField: 'owner',
+  localField: '_id',
+  justOne: false,
 })
 
 // userSchema.index({ firstName: 'text', lastName: 'text', email: 'text' })

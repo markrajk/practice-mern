@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getTeam, updateTeam, deleteTeam } from '../../actions/teamActions'
-import { Container, Header, Title, Table } from './styles'
+import { Container, Header, Title, Table, Editable } from './styles'
+import LeadPencilIcon from '../../components/Icons/LeadPencilIcon'
+import BxsSaveIcon from '../../components/Icons/BxsSaveIcon'
 
 const TeamScreen = ({ match, history }) => {
   const dispatch = useDispatch()
@@ -19,22 +21,34 @@ const TeamScreen = ({ match, history }) => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
+  const [edit, setEdit] = useState(false)
+  const [teamName, setTeamName] = useState('')
+
   useEffect(() => {
-    if (!team || success) {
-      dispatch(getTeam(match.params.id))
-    }
+    dispatch(getTeam(match.params.id))
+    // if (!team || success) {
+    //   dispatch(getTeam(match.params.id))
+    // }
     error && alert(error)
     deleteError && alert(deleteError)
     updateError && alert(updateError)
-  }, [dispatch, match.params.id, success])
+  }, [dispatch, match.params.id, success, error, deleteError, updateError])
 
-  const handleUserDelete = (id) => {
+  const handleUserDelete = (e, id) => {
+    console.log(e.currentTarget.disabled)
+    if (e.currentTarget.disabled) return
     if (!window.confirm('Are you sure you want to delete this member')) return
     const newArr = team.members
       .map((member) => member._id)
       .filter((member) => member !== id)
 
-    handleUpdate(team.name, newArr)
+    handleUpdate(undefined, newArr)
+  }
+
+  const handleTeamNameUpdate = (name) => {
+    setTeamName(name)
+    handleUpdate(teamName)
+    setEdit(false)
   }
 
   const handleUpdate = (name, members) => {
@@ -51,9 +65,28 @@ const TeamScreen = ({ match, history }) => {
   return (
     <Container>
       <Header>
-        <Title>{team && team.name}</Title>
+        <Title>
+          <Editable
+            edit={edit}
+            suppressContentEditableWarning
+            onInput={(e) => setTeamName(e.target.textContent)}
+          >
+            {team && team.name}
+          </Editable>
+        </Title>
         {team && userInfo._id === team.owner._id && (
-          <button onClick={deleteTeamHandler}>Delete</button>
+          <>
+            {!edit ? (
+              <i onClick={() => setEdit(!edit)}>
+                <LeadPencilIcon />
+              </i>
+            ) : (
+              <i onClick={() => handleTeamNameUpdate(teamName)}>
+                <BxsSaveIcon />
+              </i>
+            )}
+            <button onClick={deleteTeamHandler}>Delete</button>
+          </>
         )}
       </Header>
 
@@ -77,9 +110,7 @@ const TeamScreen = ({ match, history }) => {
                   </Link>
                 </td>
                 <td>Owner</td>
-                <td>
-                  <button className="delete">Delete</button>
-                </td>
+                <td>{/* <button className="delete">Delete</button> */}</td>
               </tr>
               <>
                 {team.admins.map((admin) => (
@@ -101,8 +132,20 @@ const TeamScreen = ({ match, history }) => {
                     <td>Member</td>
                     <td>
                       <button
-                        className="delete"
-                        onClick={(e) => handleUserDelete(member._id)}
+                        disabled={
+                          !(
+                            team &&
+                            (userInfo._id === team.owner._id ||
+                              team.admins.includes(userInfo))
+                          )
+                        }
+                        className={
+                          team &&
+                          (userInfo._id === team.owner._id ||
+                            team.admins.includes(userInfo)) &&
+                          'delete'
+                        }
+                        onClick={(e) => handleUserDelete(e, member._id)}
                       >
                         Delete
                       </button>

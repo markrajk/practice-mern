@@ -52,13 +52,16 @@ export const restrictToTeamRoles = (...roles) =>
 
     if (
       roles.includes('owner') &&
-      toString(team.owner) === toString(req.user._id)
-    )
+      team.owner.toString() === req.user._id.toString()
+    ) {
       return next()
-    if (roles.includes('admin') && team.admins.includes(req.user._id))
+    }
+    if (roles.includes('admin') && team.admins.includes(req.user._id)) {
       return next()
-    if (roles.includes('member') && team.members.includes(req.user._id))
+    }
+    if (roles.includes('member') && team.members.includes(req.user._id)) {
       return next()
+    }
 
     return next(
       new AppError('You do not have permission to perform this action', 403)

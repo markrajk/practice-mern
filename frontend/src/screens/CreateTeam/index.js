@@ -29,7 +29,13 @@ const CreateTeamScreen = ({ history }) => {
   const [team, setTeam] = useState({ name: '', members: [] })
 
   const handleAddUser = (user) => {
-    if (team.members.includes(user) || userInfo._id === user._id) return
+    if (
+      team.members.some((el) => {
+        return JSON.stringify(el) === JSON.stringify(user)
+      }) ||
+      userInfo._id === user._id
+    )
+      return
     setTeam({ ...team, members: [...team.members, user] })
   }
 
@@ -41,11 +47,15 @@ const CreateTeamScreen = ({ history }) => {
   const handleTeamCreate = (team) => {
     if (!team.name) return alert('Team must have name')
 
+    const updatedArr = team.members.map((member) => member._id)
+    setTeam({ ...team, members: updatedArr })
+
     console.log(team)
     dispatch(createTeam(team))
   }
 
   useEffect(() => {
+    console.log(team)
     if (success && team) {
       history.push(`/teams/${teamCreated._id}`)
     }
