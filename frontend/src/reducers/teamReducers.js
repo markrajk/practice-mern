@@ -18,7 +18,7 @@ export const getTeamReducer = (state = {}, action) => {
     case TEAM_GET_ONE_REQUEST:
       return { loading: true }
     case TEAM_GET_ONE_SUCCESS:
-      return { loading: false, team: action.payload }
+      return { loading: false, success: true, team: action.payload }
     case TEAM_GET_ONE_FAIL:
       return { loading: false, error: action.payload }
     default:

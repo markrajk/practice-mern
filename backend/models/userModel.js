@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       validate: [validator.isEmail, 'Please provide a valid email'],
     },
+    jobTitle: String,
     password: {
       type: String,
       required: [true, 'User must have a password.'],

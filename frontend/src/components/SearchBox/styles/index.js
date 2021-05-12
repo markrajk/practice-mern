@@ -19,7 +19,6 @@ export const Container = styled.div`
 export const Input = styled.input`
   ${({ theme }) => css`
     padding: 0.8em 1em;
-    margin-bottom: 1em;
     width: 100%;
     display: flex;
     align-items: center;
@@ -39,7 +38,7 @@ export const Input = styled.input`
 export const Results = styled.div`
   ${({ theme }) => css`
     position: absolute;
-    bottom: 1.4em;
+    bottom: 0;
     left: 0;
     width: 100%;
     display: flex;

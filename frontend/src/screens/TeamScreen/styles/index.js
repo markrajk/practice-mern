@@ -10,6 +10,10 @@ export const Container = styled.div`
     box-shadow: ${theme.boxShadow};
   `}
 `
+export const Content = styled.div`
+  /* max-width: 80em; */
+`
+
 export const Header = styled.div`
   ${({ theme }) => css`
     margin-bottom: 2em;
@@ -84,9 +88,28 @@ export const Table = styled.table`
     border: 1px solid black;
     border-collapse: collapse;
 
+    & tr {
+      &.input-row {
+        font-size: 0.9em;
+
+        & div {
+          max-width: 500px;
+
+          & input {
+            padding: 0.5em 1em;
+          }
+
+          & button {
+            margin: 0 !important;
+          }
+        }
+      }
+    }
+
     & th,
     td {
       padding: 0.5rem 1rem;
+      vertical-align: center;
     }
 
     & thead {
@@ -106,6 +129,24 @@ export const Table = styled.table`
         font-weight: 500;
         border: 1px solid black;
 
+        /* &::after {
+          content: '';
+          display: inline-block;
+          vertical-align: top;
+          min-height: 3.84rem;
+        } */
+
+        &.job-title {
+          & span {
+            width: 80%;
+            max-width: 150px;
+          }
+          & i {
+            margin-left: auto;
+            font-size: 1.5em;
+          }
+        }
+
         & a {
           color: ${theme.colors.black};
           text-decoration: none;
@@ -116,8 +157,8 @@ export const Table = styled.table`
         }
 
         & button {
-          display: block;
           margin: 0 auto;
+          display: block;
           padding: 0.4em 1em;
           font-size: 1em;
           font-weight: 600;
