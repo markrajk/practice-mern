@@ -115,8 +115,84 @@ const TeamScreen = ({ match, history }) => {
 
   // const setJobTitle = (role, value) => {}
 
+  const [sort, setSort] = useState('')
+  const [bool, setBool] = useState(true)
+
+  const handleSort = (str) => {
+    str === sort && setBool(!bool)
+    setSort(str)
+  }
+
+  const usersArr = (team, sort, bool) => {
+    const sortByRole = (a, b) => {
+      const roleA = a.role.toUpperCase()
+      const roleB = b.role.toUpperCase()
+
+      if (roleA < roleB) {
+        return bool ? -1 : 1
+      }
+      if (roleA > roleB) {
+        return bool ? 1 : -1
+      }
+
+      // names must be equal
+      return 0
+    }
+
+    const sortByName = (a, b) => {
+      const roleA = a.fullName.toUpperCase()
+      const roleB = b.fullName.toUpperCase()
+
+      if (roleA < roleB) {
+        return bool ? -1 : 1
+      }
+      if (roleA > roleB) {
+        return bool ? 1 : -1
+      }
+
+      // names must be equal
+      return 0
+    }
+
+    const sortByTitle = (a, b) => {
+      const roleA = a.jobTitle ? a.jobTitle.toUpperCase() : 'zzzzzz'
+      const roleB = b.jobTitle ? b.jobTitle.toUpperCase() : 'zzzzzz'
+
+      if (roleA < roleB) {
+        return bool ? -1 : 1
+      }
+      if (roleA > roleB) {
+        return bool ? 1 : -1
+      }
+
+      // names must be equal
+      return 0
+    }
+
+    team.members.forEach((member) => (member.role = 'Member'))
+    team.admins.forEach((admin) => (admin.role = 'Admin'))
+    team.owner.role = 'Owner'
+
+    if (sort === 'role')
+      return [team.owner, ...team.admins, ...team.members].sort(sortByRole)
+    if (sort === 'name')
+      return [team.owner, ...team.admins, ...team.members].sort(sortByName)
+    if (sort === 'title')
+      return [team.owner, ...team.admins, ...team.members].sort(sortByTitle)
+    return [team.owner, ...team.admins, ...team.members]
+  }
+
   useEffect(() => {
     dispatch(getTeam(match.params.id))
+
+    // if (team) {
+    //   team.members.forEach((member) => (member.role = 'member'))
+    //   team.admins.forEach((admin) => (admin.role = 'admin'))
+    //   team.owner.role = 'owner'
+
+    //   return [team.owner, ...team.admins, ...team.members]
+    // }
+    // [team.owner, ...team.admins, ...team.members].map(member)
 
     error && alert(error)
     deleteError && alert(deleteError)
@@ -169,114 +245,27 @@ const TeamScreen = ({ match, history }) => {
             <Table>
               <thead>
                 <tr>
-                  <th>User</th>
-                  <th>Role</th>
-                  <th>Job Title</th>
+                  <th onClick={(e) => handleSort('name')}>User</th>
+                  <th onClick={(e) => handleSort('role')}>Role</th>
+                  <th onClick={(e) => handleSort('title')}>Job Title</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="input-row">
                   <td colSpan="4">
-                    <SearchBox addUser={handleAddUser} />
+                    <SearchBox team={team} addUser={handleAddUser} />
                   </td>
                 </tr>
-                <tr key={team.owner._id} ref={getRef}>
-                  <td>
-                    <Link to={`/users/${team.owner._id}`}>
-                      {team.owner.fullName}
-                    </Link>
-                  </td>
-                  <td>Owner</td>
-                  <td className="job-title">
-                    <div>
-                      <Editable
-                        edit={editEach[`${team.owner._id}`]}
-                        suppressContentEditableWarning
-                        onInput={(e) => setJobTitle(e.target.textContent)}
-                      >
-                        {team.owner.jobTitle
-                          ? team.owner.jobTitle
-                          : 'No job title'}
-                      </Editable>
-
-                      {isOwner(team) && (
-                        <>
-                          {!editEach[`${team.owner._id}`] ? (
-                            <i
-                              className="edit"
-                              onClick={(e) =>
-                                handleJobTitleEdit(team.owner._id)
-                              }
-                            >
-                              <LeadPencilIcon />
-                            </i>
-                          ) : (
-                            <i
-                              className="save"
-                              onClick={(e) => updateJobTitle(team.owner._id)}
-                            >
-                              <BxsSaveIcon />
-                            </i>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </td>
-                  <td>{/* <button className="delete">Delete</button> */}</td>
-                </tr>
-                <>
-                  {team.admins.map((admin) => (
-                    <tr key={admin._id} ref={getRef}>
-                      <td>{admin.fullName}</td>
-                      <td>Admin</td>
-                      <td className="job-title">
-                        <div>
-                          <Editable
-                            edit={editEach[`${admin._id}`]}
-                            suppressContentEditableWarning
-                            onInput={(e) => setJobTitle(e.target.textContent)}
-                          >
-                            {admin.jobTitle ? admin.jobTitle : 'No job title'}
-                          </Editable>
-
-                          {isOwner(team) && (
-                            <>
-                              {!editEach[`${admin._id}`] ? (
-                                <i
-                                  className="edit"
-                                  onClick={(e) => handleJobTitleEdit(admin._id)}
-                                >
-                                  <LeadPencilIcon />
-                                </i>
-                              ) : (
-                                <i
-                                  className="save"
-                                  onClick={(e) => updateJobTitle(admin._id)}
-                                >
-                                  <BxsSaveIcon />
-                                </i>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </td>
-
-                      <td>
-                        <button className="delete">Delete</button>
-                      </td>
-                    </tr>
-                  ))}
-                </>
-                <>
-                  {team.members.map((member) => (
+                {usersArr(team, sort, bool).map((member, index, arr) => {
+                  return (
                     <tr key={member._id} ref={getRef}>
                       <td>
                         <Link to={`/users/${member._id}`}>
                           {member.fullName}
                         </Link>
                       </td>
-                      <td>Member</td>
+                      <td>{member.role}</td>
                       <td className="job-title">
                         <div>
                           <Editable
@@ -312,29 +301,31 @@ const TeamScreen = ({ match, history }) => {
                         </div>
                       </td>
                       <td>
-                        <button
-                          disabled={
-                            !(
+                        {member.role !== 'Owner' && (
+                          <button
+                            disabled={
+                              !(
+                                team &&
+                                (userInfo._id === team.owner._id ||
+                                  team.admins.includes(userInfo))
+                              )
+                            }
+                            className={
                               team &&
                               (userInfo._id === team.owner._id ||
                                 team.admins.includes(userInfo))
-                            )
-                          }
-                          className={
-                            team &&
-                            (userInfo._id === team.owner._id ||
-                              team.admins.includes(userInfo))
-                              ? 'delete'
-                              : ''
-                          }
-                          onClick={(e) => handleUserDelete(e, member._id)}
-                        >
-                          Delete
-                        </button>
+                                ? 'delete'
+                                : ''
+                            }
+                            onClick={(e) => handleUserDelete(e, member._id)}
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     </tr>
-                  ))}
-                </>
+                  )
+                })}
               </tbody>
             </Table>
           )}

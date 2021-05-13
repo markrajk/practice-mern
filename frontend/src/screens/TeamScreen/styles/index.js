@@ -120,6 +120,7 @@ export const Table = styled.table`
         color: ${theme.colors.white};
         background-color: ${theme.colors.black};
         border: 1px solid black;
+        cursor: pointer;
       }
     }
 

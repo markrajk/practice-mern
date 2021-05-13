@@ -4,11 +4,14 @@ import { getAllUsers } from '../../actions/userActions'
 import { Container, Input, Results, ResultsItem } from './styles'
 import PropTypes from 'prop-types'
 
-const SearchBox = ({ addUser }) => {
+const SearchBox = ({ team, addUser }) => {
   const dispatch = useDispatch()
 
   const allUsers = useSelector((state) => state.getAllUser)
   const { users } = allUsers
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   const [searchFocus, setSearchFocus] = useState(false)
 
@@ -31,16 +34,30 @@ const SearchBox = ({ addUser }) => {
         onFocus={(e) => setSearchFocus(true)}
         autoComplete="off"
       />
-      {users && users[0] && searchFocus && (
+      {team && users && users[0] && searchFocus && (
         <Results>
-          {users.map((user) => (
-            <ResultsItem key={user._id}>
-              <p>
-                {user.firstName} {user.lastName}
-              </p>
-              <button onClick={(e) => handleAddUser(user)}>Add</button>
-            </ResultsItem>
-          ))}
+          {users.map((user) => {
+            if (
+              (team.members &&
+                team.members.some((member) => member._id === user._id)) ||
+              (team.admins &&
+                team.admins.some((admin) => admin._id === user._id)) ||
+              (userInfo && userInfo._id === user._id) ||
+              (team.owner && team.owner._id === user._id)
+            ) {
+            } else {
+              return (
+                <>
+                  <ResultsItem key={user._id}>
+                    <p>
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <button onClick={(e) => handleAddUser(user)}>Add</button>
+                  </ResultsItem>
+                </>
+              )
+            }
+          })}
         </Results>
       )}
     </Container>
@@ -49,6 +66,7 @@ const SearchBox = ({ addUser }) => {
 
 Comment.propTypes = {
   addUser: PropTypes.func.isRequired,
+  team: PropTypes.object.isRequired,
 }
 
 export default SearchBox

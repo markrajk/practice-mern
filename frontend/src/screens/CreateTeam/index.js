@@ -73,7 +73,7 @@ const CreateTeamScreen = ({ history }) => {
         />
 
         <Label htmlFor="search-box">Team members</Label>
-        <SearchBox addUser={handleAddUser} />
+        <SearchBox team={team} addUser={handleAddUser} />
       </ContentWrapper>
 
       <Members>
