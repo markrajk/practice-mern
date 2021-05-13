@@ -19,7 +19,7 @@ const Profile = ({ history, match }) => {
   const { userInfo: userInfoLogin } = userLogin
 
   const gotUser = useSelector((state) => state.getUser)
-  const { userInfo, loading } = gotUser
+  const { userInfo } = gotUser
 
   const [edit, setEdit] = useState(false)
   const [firstName, setFirstName] = useState('')
@@ -32,7 +32,6 @@ const Profile = ({ history, match }) => {
   }
 
   useEffect(() => {
-    console.log(userInfo)
     const getUserStart = async () => {
       await dispatch(getUser(match.params.id))
     }
@@ -109,7 +108,7 @@ const Profile = ({ history, match }) => {
         {userInfo && userInfo.member && userInfo.member[0] && (
           <>
             {userInfo.member.map((team) => (
-              <h2 style={{ marginBottom: '10px' }}>
+              <h2 key={team._id} style={{ marginBottom: '10px' }}>
                 <Link to={`/teams/${team._id}`}>{team.name} (member)</Link>
               </h2>
             ))}
@@ -119,7 +118,7 @@ const Profile = ({ history, match }) => {
         {userInfo && userInfo.admin && userInfo.admin[0] && (
           <>
             {userInfo.admin.map((team) => (
-              <h2 style={{ marginBottom: '10px' }}>
+              <h2 key={team._id} style={{ marginBottom: '10px' }}>
                 <Link to={`/teams/${team._id}`}>{team.name} (admin)</Link>
               </h2>
             ))}
@@ -129,7 +128,7 @@ const Profile = ({ history, match }) => {
         {userInfo && userInfo.owner && userInfo.owner[0] && (
           <>
             {userInfo.owner.map((team) => (
-              <h2 style={{ marginBottom: '10px' }}>
+              <h2 key={team._id} style={{ marginBottom: '10px' }}>
                 <Link to={`/teams/${team._id}`}>{team.name} (owner)</Link>
               </h2>
             ))}

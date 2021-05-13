@@ -129,21 +129,14 @@ export const Table = styled.table`
         font-weight: 500;
         border: 1px solid black;
 
-        /* &::after {
-          content: '';
-          display: inline-block;
-          vertical-align: top;
-          min-height: 3.84rem;
-        } */
-
         &.job-title {
-          & span {
-            width: 80%;
-            max-width: 150px;
-          }
           & i {
-            margin-left: auto;
             font-size: 1.5em;
+          }
+          & div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
           }
         }
 

@@ -68,3 +68,4 @@ export const getUser = getOne(User, [
   { path: 'owner' },
   { path: 'admin' },
 ])
+export const updateUser = updateOne(User)

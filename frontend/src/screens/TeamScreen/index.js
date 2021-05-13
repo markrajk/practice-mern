@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getTeam, updateTeam, deleteTeam } from '../../actions/teamActions'
+import { updateUser } from '../../actions/userActions'
 import { Container, Content, Header, Title, Table, Editable } from './styles'
 import SearchBox from '../../components/SearchBox'
 import LeadPencilIcon from '../../components/Icons/LeadPencilIcon'
@@ -11,13 +12,16 @@ const TeamScreen = ({ match, history }) => {
   const dispatch = useDispatch()
 
   const gotTeam = useSelector((state) => state.getTeam)
-  const { team, success: getTeamSuccess, loading, error } = gotTeam
+  const { team, error } = gotTeam
 
   const updatedTeam = useSelector((state) => state.updateTeam)
   const { success, error: updateError } = updatedTeam
 
   const deletedTeam = useSelector((state) => state.deleteTeam)
   const { error: deleteError } = deletedTeam
+
+  const updatedUser = useSelector((state) => state.updateUser)
+  const { error: updateUserError, success: updateUserSuccess } = updatedUser
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -26,10 +30,21 @@ const TeamScreen = ({ match, history }) => {
   const [teamName, setTeamName] = useState('')
 
   const [editEach, setEditEach] = useState({})
+  const [jobTitle, setJobTitle] = useState(null)
 
-  const rowElements = useRef(new Array())
+  const rowElements = useRef([])
 
   const getRef = (element) => rowElements.current.push(element)
+
+  const isAdmin = (team) => {
+    if (team.admins.some((user) => user._id === userInfo._id)) return true
+    return false
+  }
+
+  const isOwner = (team) => {
+    if (team.owner._id === userInfo._id) return true
+    return false
+  }
 
   const handleAddUser = (user) => {
     if (
@@ -46,7 +61,6 @@ const TeamScreen = ({ match, history }) => {
   }
 
   const handleUserDelete = (e, id) => {
-    console.log(e.currentTarget.disabled)
     if (e.currentTarget.disabled) return
     if (!window.confirm('Are you sure you want to delete this member')) return
     const newArr = team.members
@@ -74,11 +88,9 @@ const TeamScreen = ({ match, history }) => {
   }
 
   const handleJobTitleEdit = (id) => {
-    console.log(id)
     let strObj = `{`
 
     Array.from([...team.members, ...team.admins, team.owner]).forEach((e) => {
-      console.log(e._id === id)
       if (e._id === id) {
         strObj += `"${e._id}": true,`
       } else {
@@ -93,9 +105,15 @@ const TeamScreen = ({ match, history }) => {
 
     setEditEach(newObj)
     // setEditEach({ ...newObj, ...(editEach[`${id}`] = !newObj[`${id}`]) })
-
-    console.log(editEach)
   }
+
+  const updateJobTitle = (id) => {
+    if (jobTitle === '') setJobTitle(undefined)
+    dispatch(updateUser(id, { jobTitle: jobTitle }))
+    handleJobTitleEdit(null)
+  }
+
+  // const setJobTitle = (role, value) => {}
 
   useEffect(() => {
     dispatch(getTeam(match.params.id))
@@ -103,7 +121,17 @@ const TeamScreen = ({ match, history }) => {
     error && alert(error)
     deleteError && alert(deleteError)
     updateError && alert(updateError)
-  }, [dispatch, match.params.id, success, error, deleteError, updateError])
+    updateUserError && alert(updateUserError)
+  }, [
+    dispatch,
+    match.params.id,
+    success,
+    error,
+    deleteError,
+    updateError,
+    updateUserSuccess,
+    updateUserError,
+  ])
 
   return (
     <Container>
@@ -160,16 +188,40 @@ const TeamScreen = ({ match, history }) => {
                     </Link>
                   </td>
                   <td>Owner</td>
-                  <td>
-                    <Editable
-                      edit={edit}
-                      suppressContentEditableWarning
-                      onInput={(e) => setTeamName(e.target.textContent)}
-                    >
-                      {team.owner.jobTitle
-                        ? team.owner.jobTitle
-                        : 'No job title'}
-                    </Editable>
+                  <td className="job-title">
+                    <div>
+                      <Editable
+                        edit={editEach[`${team.owner._id}`]}
+                        suppressContentEditableWarning
+                        onInput={(e) => setJobTitle(e.target.textContent)}
+                      >
+                        {team.owner.jobTitle
+                          ? team.owner.jobTitle
+                          : 'No job title'}
+                      </Editable>
+
+                      {isOwner(team) && (
+                        <>
+                          {!editEach[`${team.owner._id}`] ? (
+                            <i
+                              className="edit"
+                              onClick={(e) =>
+                                handleJobTitleEdit(team.owner._id)
+                              }
+                            >
+                              <LeadPencilIcon />
+                            </i>
+                          ) : (
+                            <i
+                              className="save"
+                              onClick={(e) => updateJobTitle(team.owner._id)}
+                            >
+                              <BxsSaveIcon />
+                            </i>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </td>
                   <td>{/* <button className="delete">Delete</button> */}</td>
                 </tr>
@@ -178,13 +230,37 @@ const TeamScreen = ({ match, history }) => {
                     <tr key={admin._id} ref={getRef}>
                       <td>{admin.fullName}</td>
                       <td>Admin</td>
-                      <Editable
-                        edit={edit}
-                        suppressContentEditableWarning
-                        onInput={(e) => setTeamName(e.target.textContent)}
-                      >
-                        {admin.jobTitle ? admin.jobTitle : 'No job title'}
-                      </Editable>
+                      <td className="job-title">
+                        <div>
+                          <Editable
+                            edit={editEach[`${admin._id}`]}
+                            suppressContentEditableWarning
+                            onInput={(e) => setJobTitle(e.target.textContent)}
+                          >
+                            {admin.jobTitle ? admin.jobTitle : 'No job title'}
+                          </Editable>
+
+                          {isOwner(team) && (
+                            <>
+                              {!editEach[`${admin._id}`] ? (
+                                <i
+                                  className="edit"
+                                  onClick={(e) => handleJobTitleEdit(admin._id)}
+                                >
+                                  <LeadPencilIcon />
+                                </i>
+                              ) : (
+                                <i
+                                  className="save"
+                                  onClick={(e) => updateJobTitle(admin._id)}
+                                >
+                                  <BxsSaveIcon />
+                                </i>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
 
                       <td>
                         <button className="delete">Delete</button>
@@ -202,29 +278,38 @@ const TeamScreen = ({ match, history }) => {
                       </td>
                       <td>Member</td>
                       <td className="job-title">
-                        <Editable
-                          edit={editEach[`${member._id}`]}
-                          suppressContentEditableWarning
-                          onInput={(e) => setTeamName(e.target.textContent)}
-                        >
-                          {member.jobTitle ? member.jobTitle : 'No job title'}
-                        </Editable>
+                        <div>
+                          <Editable
+                            edit={editEach[`${member._id}`]}
+                            suppressContentEditableWarning
+                            onInput={(e) => setJobTitle(e.target.textContent)}
+                          >
+                            {member.jobTitle ? member.jobTitle : 'No job title'}
+                          </Editable>
 
-                        {!editEach[`${member._id}`] ? (
-                          <i
-                            className="edit"
-                            onClick={(e) => handleJobTitleEdit(member._id)}
-                          >
-                            <LeadPencilIcon />
-                          </i>
-                        ) : (
-                          <i
-                            className="save"
-                            onClick={(e) => handleJobTitleEdit(member._id)}
-                          >
-                            <BxsSaveIcon />
-                          </i>
-                        )}
+                          {isAdmin(team) ||
+                            (isOwner(team) && (
+                              <>
+                                {!editEach[`${member._id}`] ? (
+                                  <i
+                                    className="edit"
+                                    onClick={(e) =>
+                                      handleJobTitleEdit(member._id)
+                                    }
+                                  >
+                                    <LeadPencilIcon />
+                                  </i>
+                                ) : (
+                                  <i
+                                    className="save"
+                                    onClick={(e) => updateJobTitle(member._id)}
+                                  >
+                                    <BxsSaveIcon />
+                                  </i>
+                                )}
+                              </>
+                            ))}
+                        </div>
                       </td>
                       <td>
                         <button
@@ -238,8 +323,9 @@ const TeamScreen = ({ match, history }) => {
                           className={
                             team &&
                             (userInfo._id === team.owner._id ||
-                              team.admins.includes(userInfo)) &&
-                            'delete'
+                              team.admins.includes(userInfo))
+                              ? 'delete'
+                              : ''
                           }
                           onClick={(e) => handleUserDelete(e, member._id)}
                         >

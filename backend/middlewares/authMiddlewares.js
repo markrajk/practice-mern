@@ -48,7 +48,6 @@ export const protect = catchAsync(async (req, res, next) => {
 export const restrictToTeamRoles = (...roles) =>
   catchAsync(async (req, res, next) => {
     const team = await Team.findById(req.params.id)
-    console.log(toString(team.owner) === toString(req.user._id), roles)
 
     if (
       roles.includes('owner') &&

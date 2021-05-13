@@ -16,6 +16,9 @@ import {
   USER_GET_ALL_REQUEST,
   USER_GET_ALL_SUCCESS,
   USER_GET_ALL_FAIL,
+  USER_UPDATE_ONE_REQUEST,
+  USER_UPDATE_ONE_SUCCESS,
+  USER_UPDATE_ONE_FAIL,
 } from '../constants/userConstants'
 
 export const getUser = (id) => async (dispatch) => {
@@ -221,6 +224,49 @@ export const updateMe = (firstName, lastName, email) => async (
   } catch (error) {
     dispatch({
       type: UPDATE_ME_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const updateUser = (userId, user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_ONE_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.patch(
+      `/api/v1/users/${userId}`,
+      { ...user },
+      config
+    )
+
+    const updatedUser = data.data.data
+    updatedUser.token = userInfo.token
+
+    dispatch({
+      type: USER_UPDATE_ONE_SUCCESS,
+      payload: updatedUser,
+    })
+
+    localStorage.setItem('userInfo', JSON.stringify(updatedUser))
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_ONE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

@@ -50,16 +50,14 @@ const CreateTeamScreen = ({ history }) => {
     const updatedArr = team.members.map((member) => member._id)
     setTeam({ ...team, members: updatedArr })
 
-    console.log(team)
     dispatch(createTeam(team))
   }
 
   useEffect(() => {
-    console.log(team)
-    if (success && team) {
+    if (success && team && teamCreated) {
       history.push(`/teams/${teamCreated._id}`)
     }
-  }, [success, history, team])
+  }, [success, history, team, teamCreated])
 
   return (
     <Container>
@@ -80,8 +78,8 @@ const CreateTeamScreen = ({ history }) => {
 
       <Members>
         {team &&
-          team.members.map((member) => (
-            <MemberItem key={member._id}>
+          team.members.map((member, index) => (
+            <MemberItem key={member._id || index}>
               <p>{member.fullName}</p>
               <i onClick={(e) => handleDeleteUser(member)}>
                 <BinIcon />

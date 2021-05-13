@@ -4,13 +4,18 @@ import {
   getMe,
   getUser,
   updateMe,
+  updateUser,
   getAllUsers,
 } from '../controllers/userController.js'
 import {
   setPostReceiverIds,
   createPost,
 } from '../controllers/postController.js'
-import { protect, setUserIds } from '../middlewares/authMiddlewares.js'
+import {
+  protect,
+  setUserIds,
+  restrictToTeamRoles,
+} from '../middlewares/authMiddlewares.js'
 
 const router = express.Router()
 
@@ -22,7 +27,7 @@ router.get('/me', protect, getMe, getUser)
 router.patch('/updateMe', protect, updateMe)
 
 router.route('/').get(getAllUsers)
-router.route('/:id').get(getUser)
+router.route('/:id').get(getUser).patch(protect, updateUser)
 
 router
   .route('/:id/posts')
