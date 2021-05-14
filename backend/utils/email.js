@@ -39,7 +39,7 @@ export default class Email {
     })
   }
 
-  // // Send the actual email
+  // Send the actual email
   async send(template, subject) {
     // 1) Render HTML based on a pug template
     const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
@@ -62,7 +62,7 @@ export default class Email {
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Natours Family!')
+    await this.send('welcome', 'Welcome to the practice app!')
   }
 
   async sendPasswordReset() {
