@@ -3,7 +3,20 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getTeam, updateTeam, deleteTeam } from '../../actions/teamActions'
 import { updateUser } from '../../actions/userActions'
-import { Container, Content, Header, Title, Table, Editable } from './styles'
+import {
+  createInvitation,
+  deleteInvitation,
+} from '../../actions/invitationActions'
+import {
+  Container,
+  Content,
+  Header,
+  Title,
+  Table,
+  Editable,
+  Button,
+} from './styles'
+import Modal from '../../components/Modal'
 import SearchBox from '../../components/SearchBox'
 import LeadPencilIcon from '../../components/Icons/LeadPencilIcon'
 import BxsSaveIcon from '../../components/Icons/BxsSaveIcon'
@@ -31,6 +44,8 @@ const TeamScreen = ({ match, history }) => {
 
   const [editEach, setEditEach] = useState({})
   const [jobTitle, setJobTitle] = useState(null)
+
+  const [openModal, setOpenModal] = useState(false)
 
   const rowElements = useRef([])
 
@@ -174,12 +189,66 @@ const TeamScreen = ({ match, history }) => {
     team.owner.role = 'Owner'
 
     if (sort === 'role')
-      return [team.owner, ...team.admins, ...team.members].sort(sortByRole)
+      return [
+        team.owner,
+        ...team.admins,
+        ...team.members,
+        ...team.invitations.map((inv) => {
+          inv.receiver.pending = true
+          inv.receiver.invitationId = inv._id
+          return inv.receiver
+        }),
+      ].sort(sortByRole)
     if (sort === 'name')
-      return [team.owner, ...team.admins, ...team.members].sort(sortByName)
+      return [
+        team.owner,
+        ...team.admins,
+        ...team.members,
+        ...team.invitations.map((inv) => {
+          inv.receiver.pending = true
+          inv.receiver.invitationId = inv._id
+          return inv.receiver
+        }),
+      ].sort(sortByName)
     if (sort === 'title')
-      return [team.owner, ...team.admins, ...team.members].sort(sortByTitle)
-    return [team.owner, ...team.admins, ...team.members]
+      return [
+        team.owner,
+        ...team.admins,
+        ...team.members,
+        ...team.invitations.map((inv) => {
+          inv.receiver.pending = true
+          inv.receiver.invitationId = inv._id
+          return inv.receiver
+        }),
+      ].sort(sortByTitle)
+    return [
+      team.owner,
+      ...team.admins,
+      ...team.members,
+      ...team.invitations.map((inv) => {
+        inv.receiver.pending = true
+        inv.receiver.invitationId = inv._id
+        return inv.receiver
+      }),
+    ]
+  }
+
+  const createdInvitation = useSelector((state) => state.createInvitation)
+  const { success: invCreateSuccess } = createdInvitation
+
+  const deletedInvitation = useSelector((state) => state.deleteInvitation)
+  const { success: invDeleteSuccess } = deletedInvitation
+
+  const handleInvitation = (user) => {
+    dispatch(createInvitation(user._id, team._id))
+    // team.members.forEach((member) => {
+    //   console.log(team, member._id, team._id)
+    //   dispatch(createInvitation(member, team._id))
+    // })
+  }
+
+  const handleInvitationCancel = (id) => {
+    dispatch(deleteInvitation(id))
   }
 
   useEffect(() => {
@@ -207,130 +276,191 @@ const TeamScreen = ({ match, history }) => {
     updateError,
     updateUserSuccess,
     updateUserError,
+    invDeleteSuccess,
+    invCreateSuccess,
   ])
 
   return (
-    <Container>
-      <Content>
-        <Header>
-          <Title>
-            <Editable
-              edit={edit}
-              suppressContentEditableWarning
-              onInput={(e) => setTeamName(e.target.textContent)}
-            >
-              {team && team.name}
-            </Editable>
-          </Title>
-          {team && userInfo._id === team.owner._id && (
-            <>
-              {!edit ? (
-                <i onClick={() => setEdit(!edit)}>
-                  <LeadPencilIcon />
-                </i>
-              ) : (
-                <i onClick={() => handleTeamNameUpdate(teamName)}>
-                  <BxsSaveIcon />
-                </i>
-              )}
-              <button onClick={deleteTeamHandler}>Delete</button>
-            </>
-          )}
-        </Header>
+    <>
+      <Container>
+        <Content>
+          <Header>
+            <Title>
+              <Editable
+                edit={edit}
+                suppressContentEditableWarning
+                onInput={(e) => setTeamName(e.target.textContent)}
+              >
+                {team && team.name}
+              </Editable>
+            </Title>
+            {team && userInfo._id === team.owner._id && (
+              <>
+                {!edit ? (
+                  <i onClick={() => setEdit(!edit)}>
+                    <LeadPencilIcon />
+                  </i>
+                ) : (
+                  <i onClick={() => handleTeamNameUpdate(teamName)}>
+                    <BxsSaveIcon />
+                  </i>
+                )}
+                <Button className="deny" onClick={deleteTeamHandler}>
+                  Delete
+                </Button>
+              </>
+            )}
+          </Header>
 
-        {/* <button onClick={handleUpdate(team.name, teamMembers)}>Update</button> */}
-        {team &&
-          (team.members || team.admins) &&
-          (team.members[0] || team.admins[0] || team.owner) && (
-            <Table>
-              <thead>
-                <tr>
-                  <th onClick={(e) => handleSort('name')}>User</th>
-                  <th onClick={(e) => handleSort('role')}>Role</th>
-                  <th onClick={(e) => handleSort('title')}>Job Title</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="input-row">
-                  <td colSpan="4">
-                    <SearchBox team={team} addUser={handleAddUser} />
-                  </td>
-                </tr>
-                {usersArr(team, sort, bool).map((member, index, arr) => {
-                  return (
-                    <tr key={member._id} ref={getRef}>
-                      <td>
-                        <Link to={`/users/${member._id}`}>
-                          {member.fullName}
-                        </Link>
-                      </td>
-                      <td>{member.role}</td>
-                      <td className="job-title">
-                        <div>
-                          <Editable
-                            edit={editEach[`${member._id}`]}
-                            suppressContentEditableWarning
-                            onInput={(e) => setJobTitle(e.target.textContent)}
-                          >
-                            {member.jobTitle ? member.jobTitle : 'No job title'}
-                          </Editable>
+          {team &&
+            (isAdmin(team) ||
+              (isOwner(team) && (
+                <Button
+                  style={{ marginBottom: '1em' }}
+                  className="confirm"
+                  onClick={(e) => setOpenModal(!openModal)}
+                >
+                  Invite members
+                </Button>
+              )))}
 
-                          {isAdmin(team) ||
-                            (isOwner(team) && (
-                              <>
-                                {!editEach[`${member._id}`] ? (
-                                  <i
-                                    className="edit"
-                                    onClick={(e) =>
-                                      handleJobTitleEdit(member._id)
-                                    }
-                                  >
-                                    <LeadPencilIcon />
-                                  </i>
-                                ) : (
-                                  <i
-                                    className="save"
-                                    onClick={(e) => updateJobTitle(member._id)}
-                                  >
-                                    <BxsSaveIcon />
-                                  </i>
-                                )}
-                              </>
-                            ))}
-                        </div>
-                      </td>
-                      <td>
-                        {member.role !== 'Owner' && (
-                          <button
-                            disabled={
-                              !(
-                                team &&
-                                (userInfo._id === team.owner._id ||
-                                  team.admins.includes(userInfo))
-                              )
-                            }
-                            className={
-                              team &&
-                              (userInfo._id === team.owner._id ||
-                                team.admins.includes(userInfo))
-                                ? 'delete'
-                                : ''
-                            }
-                            onClick={(e) => handleUserDelete(e, member._id)}
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </Table>
-          )}
-      </Content>
-    </Container>
+          {/* <button onClick={handleUpdate(team.name, teamMembers)}>Update</button> */}
+          {team &&
+            (team.members || team.admins) &&
+            (team.members[0] || team.admins[0] || team.owner) && (
+              <Table>
+                <thead>
+                  <tr>
+                    <th onClick={(e) => handleSort('name')}>User</th>
+                    <th onClick={(e) => handleSort('role')}>Role</th>
+                    <th onClick={(e) => handleSort('title')}>Job Title</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isAdmin(team) ||
+                    (isOwner(team) && (
+                      <tr className="input-row">
+                        <td colSpan="5">
+                          <SearchBox team={team} addUser={handleAddUser} />
+                        </td>
+                      </tr>
+                    ))}
+                  {usersArr(team, sort, bool).map((member, index, arr) => {
+                    return (
+                      <tr key={member._id} ref={getRef}>
+                        <td>
+                          <Link to={`/users/${member._id}`}>
+                            {member.fullName}
+                          </Link>
+                        </td>
+                        <td>{!member.pending ? member.role : 'Pending'}</td>
+                        <td className="job-title">
+                          {!member.pending ? (
+                            <div>
+                              <Editable
+                                edit={editEach[`${member._id}`]}
+                                suppressContentEditableWarning
+                                onInput={(e) =>
+                                  setJobTitle(e.target.textContent)
+                                }
+                              >
+                                {member.jobTitle
+                                  ? member.jobTitle
+                                  : 'No job title'}
+                              </Editable>
+
+                              {isAdmin(team) ||
+                                (isOwner(team) && (
+                                  <>
+                                    {!editEach[`${member._id}`] ? (
+                                      <i
+                                        className="edit"
+                                        onClick={(e) =>
+                                          handleJobTitleEdit(member._id)
+                                        }
+                                      >
+                                        <LeadPencilIcon />
+                                      </i>
+                                    ) : (
+                                      <i
+                                        className="save"
+                                        onClick={(e) =>
+                                          updateJobTitle(member._id)
+                                        }
+                                      >
+                                        <BxsSaveIcon />
+                                      </i>
+                                    )}
+                                  </>
+                                ))}
+                            </div>
+                          ) : (
+                            <p>Pending</p>
+                          )}
+                        </td>
+                        <td>
+                          <p>{member.pending ? 'Pending' : 'Active'}</p>
+                        </td>
+                        <td>
+                          {!member.pending ? (
+                            <>
+                              {member.role !== 'Owner' && (
+                                <button
+                                  disabled={
+                                    !(
+                                      team &&
+                                      (userInfo._id === team.owner._id ||
+                                        team.admins.includes(userInfo))
+                                    )
+                                  }
+                                  className={
+                                    team &&
+                                    (userInfo._id === team.owner._id ||
+                                      team.admins.includes(userInfo))
+                                      ? 'delete'
+                                      : ''
+                                  }
+                                  onClick={(e) =>
+                                    handleUserDelete(e, member._id)
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </>
+                          ) : (
+                            <button
+                              disabled={!(isAdmin(team) || isOwner(team))}
+                              className={
+                                isAdmin(team) || isOwner(team) ? 'delete' : ''
+                              }
+                              onClick={(e) =>
+                                handleInvitationCancel(member.invitationId)
+                              }
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </Table>
+            )}
+        </Content>
+      </Container>
+      <Modal
+        open={openModal}
+        setOpen={setOpenModal}
+        title="Send Invitations"
+        buttons={['cancel']}
+      >
+        <SearchBox invitational team={team} addUser={handleInvitation} />
+      </Modal>
+    </>
   )
 }
 

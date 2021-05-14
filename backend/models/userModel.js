@@ -65,6 +65,16 @@ userSchema.virtual('owner', {
   justOne: false,
 })
 
+userSchema.virtual('invitations', {
+  ref: 'Invitation',
+  foreignField: 'receiver',
+  localField: '_id',
+  justOne: false,
+  populate: {
+    path: 'sender',
+  },
+})
+
 // userSchema.index({ firstName: 'text', lastName: 'text', email: 'text' })
 userSchema.index({ firstName: 1, lastName: 1, email: 1 }, { unique: true })
 

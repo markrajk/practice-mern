@@ -32,19 +32,29 @@ export const Header = styled.div`
         transform: scale(1.1);
       }
     }
+  `}
+`
 
-    & button {
-      display: inline-block;
-      margin-left: auto;
-      padding: 0.6em 1.2em;
-      font-size: 1.6em;
-      font-weight: 600;
-      color: ${theme.colors.white};
+export const Button = styled.button`
+  ${({ theme }) => css`
+    display: inline-block;
+    margin-left: auto;
+    padding: 0.6em 1.2em;
+    font-size: 1.6em;
+    font-weight: 600;
+    color: ${theme.colors.white};
+
+    border-radius: 5px;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    &.deny {
       background-color: ${theme.colors.red};
-      border-radius: 5px;
-      border: 0;
-      outline: none;
-      cursor: pointer;
+    }
+
+    &.confirm {
+      background-color: ${theme.colors.blue};
     }
   `}
 `

@@ -26,7 +26,12 @@ import {
   getTeamReducer,
   updateTeamReducer,
   deleteTeamReducer,
+  joinTeamReducer,
 } from './reducers/teamReducers'
+import {
+  createInvitationReducer,
+  deleteInvitationReducer,
+} from './reducers/invitationReducers'
 
 const reducer = combineReducers({
   userSignup: userSignupReducer,
@@ -47,6 +52,9 @@ const reducer = combineReducers({
   createTeam: createTeamReducer,
   updateTeam: updateTeamReducer,
   deleteTeam: deleteTeamReducer,
+  createInvitation: createInvitationReducer,
+  deleteInvitation: deleteInvitationReducer,
+  joinTeam: joinTeamReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

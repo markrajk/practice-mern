@@ -62,10 +62,32 @@ export const getAllUsers = getAll(User, [
   { path: 'member' },
   { path: 'owner' },
   { path: 'admin' },
+  { path: 'invitations' },
 ])
 export const getUser = getOne(User, [
   { path: 'member' },
   { path: 'owner' },
   { path: 'admin' },
+  {
+    path: 'invitations',
+    model: 'Invitation',
+    populate: [
+      {
+        path: 'sender',
+        model: 'User',
+        select: 'email firstName',
+      },
+      {
+        path: 'receiver',
+        model: 'User',
+        select: 'email firstName',
+      },
+      {
+        path: 'team',
+        model: 'Team',
+        select: 'name',
+      },
+    ],
+  },
 ])
 export const updateUser = updateOne(User)

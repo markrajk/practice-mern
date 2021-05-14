@@ -49,6 +49,10 @@ export const restrictToTeamRoles = (...roles) =>
   catchAsync(async (req, res, next) => {
     const team = await Team.findById(req.params.id)
 
+    if (!team) {
+      return next(new AppError('There is no team with that id', 403))
+    }
+
     if (
       roles.includes('owner') &&
       team.owner.toString() === req.user._id.toString()
@@ -68,11 +72,26 @@ export const restrictToTeamRoles = (...roles) =>
   })
 
 export const setUserIds = (req, res, next) => {
-  if (!req.body.user) req.body.user = req.user.id
+  if (req.user) req.body.user = req.user.id
   next()
 }
 
 export const setOwnerIds = (req, res, next) => {
   if (!req.body.user) req.body.owner = req.user.id
+  next()
+}
+
+export const setReceiverIds = (req, res, next) => {
+  if (req.params.id) req.body.receiver = req.params.id
+  next()
+}
+
+export const setTeamIds = (req, res, next) => {
+  if (req.params.id) req.body.team = req.params.id
+  next()
+}
+
+export const setSenderIds = (req, res, next) => {
+  if (req.user) req.body.sender = req.user.id
   next()
 }

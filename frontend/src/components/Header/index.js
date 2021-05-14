@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Notifications from './Notifications'
 import { Container, Nav, NavLink } from './styles'
 import { Link } from 'react-router-dom'
 import { logout } from '../../actions/userActions'
@@ -18,18 +19,25 @@ const Header = () => {
         <NavLink style={{ marginRight: 'auto', marginLeft: 0 }}>
           <Link to="/">Home</Link>
         </NavLink>
+
         {userInfo && (
-          <NavLink>
-            <Link to={`/users/${userInfo._id}`}>
-              {userInfo.firstName} {userInfo.lastName}
-            </Link>
-          </NavLink>
+          <>
+            {' '}
+            <NavLink>
+              <Link to={`/users/${userInfo._id}`}>
+                {userInfo.firstName} {userInfo.lastName}
+              </Link>
+            </NavLink>
+            <Notifications userInfo={userInfo} />{' '}
+          </>
         )}
+
         {userInfo && (
           <NavLink>
             <Link to={`/createTeam`}>Create Team</Link>
           </NavLink>
         )}
+
         <NavLink>
           {userInfo ? (
             <Link to="/#" onClick={handleLougout}>

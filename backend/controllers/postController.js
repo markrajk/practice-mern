@@ -10,11 +10,6 @@ import {
   deleteOne,
 } from '../utils/handlerFactory.js'
 
-export const setPostReceiverIds = (req, res, next) => {
-  if (req.params.id) req.body.receiver = req.params.id
-  next()
-}
-
 export const getAllPosts = getAll(Post, [
   { path: 'user' },
   { path: 'comments', populate: { path: 'user' } },

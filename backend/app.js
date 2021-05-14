@@ -9,6 +9,7 @@ import globalErrorHandler from './controllers/errorController.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import teamRoutes from './routes/teamRoutes.js'
+import invitationRoutes from './routes/invitationRoutes.js'
 
 const app = express()
 
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV == 'development') {
 app.use('/api/v1/users/', userRoutes)
 app.use('/api/v1/posts/', postRoutes)
 app.use('/api/v1/teams/', teamRoutes)
+app.use('/api/v1/invitations/', invitationRoutes)
 
 const __dirname = path.resolve()
 

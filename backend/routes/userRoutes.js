@@ -7,13 +7,13 @@ import {
   updateUser,
   getAllUsers,
 } from '../controllers/userController.js'
-import {
-  setPostReceiverIds,
-  createPost,
-} from '../controllers/postController.js'
+import { createPost } from '../controllers/postController.js'
+
 import {
   protect,
   setUserIds,
+  setSenderIds,
+  setReceiverIds,
   restrictToTeamRoles,
 } from '../middlewares/authMiddlewares.js'
 
@@ -29,8 +29,6 @@ router.patch('/updateMe', protect, updateMe)
 router.route('/').get(getAllUsers)
 router.route('/:id').get(getUser).patch(protect, updateUser)
 
-router
-  .route('/:id/posts')
-  .post(protect, setUserIds, setPostReceiverIds, createPost)
+router.route('/:id/posts').post(protect, setUserIds, setReceiverIds, createPost)
 
 export default router

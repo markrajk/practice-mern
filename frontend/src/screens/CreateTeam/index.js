@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createTeam } from '../../actions/teamActions'
+
 import SearchBox from '../../components/SearchBox'
 import {
   Container,
@@ -44,18 +45,21 @@ const CreateTeamScreen = ({ history }) => {
     setTeam({ ...team, members: updatedArr })
   }
 
-  const handleTeamCreate = (team) => {
+  const handleTeamCreate = async (team) => {
     if (!team.name) return alert('Team must have name')
 
     const updatedArr = team.members.map((member) => member._id)
-    setTeam({ ...team, members: updatedArr })
+    // setTeam({ ...team, members: updatedArr })
 
-    dispatch(createTeam(team))
+    await dispatch(createTeam({ ...team, members: updatedArr }))
+    // handleInvitation(teamCreated)
   }
 
   useEffect(() => {
     if (success && team && teamCreated) {
       history.push(`/teams/${teamCreated._id}`)
+      console.log(teamCreated)
+      // handleInvitation(teamCreated)
     }
   }, [success, history, team, teamCreated])
 

@@ -34,6 +34,13 @@ const teamSchema = new mongoose.Schema(
   }
 )
 
+teamSchema.virtual('invitations', {
+  ref: 'Invitation',
+  foreignField: 'team',
+  localField: '_id',
+  justOne: false,
+})
+
 const Team = new mongoose.model('Team', teamSchema)
 
 export default Team

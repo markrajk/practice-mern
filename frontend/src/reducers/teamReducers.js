@@ -11,6 +11,9 @@ import {
   TEAM_DELETE_REQUEST,
   TEAM_DELETE_SUCCESS,
   TEAM_DELETE_FAIL,
+  TEAM_JOIN_REQUEST,
+  TEAM_JOIN_SUCCESS,
+  TEAM_JOIN_FAIL,
 } from '../constants/teamConstants'
 
 export const getTeamReducer = (state = {}, action) => {
@@ -59,6 +62,19 @@ export const deleteTeamReducer = (state = {}, action) => {
     case TEAM_DELETE_SUCCESS:
       return { loading: false, success: true }
     case TEAM_DELETE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const joinTeamReducer = (state = {}, action) => {
+  switch (action.type) {
+    case TEAM_JOIN_REQUEST:
+      return { loading: true }
+    case TEAM_JOIN_SUCCESS:
+      return { loading: false, success: true, team: action.payload }
+    case TEAM_JOIN_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

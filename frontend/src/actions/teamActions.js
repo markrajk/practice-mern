@@ -12,6 +12,9 @@ import {
   TEAM_DELETE_REQUEST,
   TEAM_DELETE_SUCCESS,
   TEAM_DELETE_FAIL,
+  TEAM_JOIN_REQUEST,
+  TEAM_JOIN_SUCCESS,
+  TEAM_JOIN_FAIL,
 } from '../constants/teamConstants'
 
 export const getTeam = (teamId) => async (dispatch, getState) => {
@@ -103,6 +106,41 @@ export const updateTeam = (teamId, team) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: TEAM_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const joinTeam = (teamId) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: TEAM_JOIN_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.patch(
+      `/api/v1/teams/${teamId}/joinTeam`,
+      {},
+      config
+    )
+
+    const updatedTeam = data.data.data
+
+    dispatch({ type: TEAM_JOIN_SUCCESS, payload: updatedTeam })
+  } catch (error) {
+    dispatch({
+      type: TEAM_JOIN_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

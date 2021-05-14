@@ -4,7 +4,7 @@ import { getAllUsers } from '../../actions/userActions'
 import { Container, Input, Results, ResultsItem } from './styles'
 import PropTypes from 'prop-types'
 
-const SearchBox = ({ team, addUser }) => {
+const SearchBox = ({ team, addUser, invitational }) => {
   const dispatch = useDispatch()
 
   const allUsers = useSelector((state) => state.getAllUser)
@@ -38,6 +38,10 @@ const SearchBox = ({ team, addUser }) => {
         <Results>
           {users.map((user) => {
             if (
+              (team.invitations &&
+                team.invitations.some(
+                  (inv) => inv.receiver._id === user._id
+                )) ||
               (team.members &&
                 team.members.some((member) => member._id === user._id)) ||
               (team.admins &&
@@ -52,7 +56,9 @@ const SearchBox = ({ team, addUser }) => {
                     <p>
                       {user.firstName} {user.lastName}
                     </p>
-                    <button onClick={(e) => handleAddUser(user)}>Add</button>
+                    <button onClick={(e) => handleAddUser(user)}>
+                      {invitational ? 'Send' : 'Add'}
+                    </button>
                   </ResultsItem>
                 </>
               )
@@ -67,6 +73,7 @@ const SearchBox = ({ team, addUser }) => {
 Comment.propTypes = {
   addUser: PropTypes.func.isRequired,
   team: PropTypes.object.isRequired,
+  invitational: PropTypes.bool,
 }
 
 export default SearchBox
