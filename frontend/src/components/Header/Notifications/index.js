@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteInvitation } from '../../../actions/invitationActions'
 import { joinTeam } from '../../../actions/teamActions'
+import { getUser } from '../../../actions/userActions'
 import {
   Container,
   DropdownButton,
@@ -32,21 +33,37 @@ const Notifications = ({ userInfo }) => {
     dispatch(deleteInvitation(id))
   }
 
-  useEffect(() => {}, [success])
+  const handleOpen = () => {
+    if (!open) {
+      dispatch(getUser(userInfo._id))
+    }
+    setOpen(!open)
+  }
+
+  const gotUser = useSelector((state) => state.getUser)
+  const { userInfo: userInfoGot } = gotUser
+
+  useEffect(() => {
+    if (!userInfoGot) {
+      dispatch(getUser(userInfo._id))
+    }
+  }, [success, userInfoGot, teamJoinSuccess, userInfo])
 
   return (
     <Container>
-      <DropdownButton onClick={(e) => setOpen(!open)}>
+      <DropdownButton onClick={handleOpen}>
         <BellIcon />
-        {userInfo.invitations && userInfo.invitations[0] && (
-          <DropdownButtonNotification>
-            {userInfo.invitations.length}
-          </DropdownButtonNotification>
-        )}
+        {userInfoGot &&
+          userInfoGot.invitations &&
+          userInfoGot.invitations[0] && (
+            <DropdownButtonNotification>
+              {userInfoGot.invitations.length}
+            </DropdownButtonNotification>
+          )}
       </DropdownButton>
-      {userInfo.invitations && userInfo.invitations[0] && (
+      {userInfoGot && userInfoGot.invitations && userInfoGot.invitations[0] && (
         <DropdownMenu style={{ display: open ? 'block' : 'none' }}>
-          {userInfo.invitations.map((inv) => (
+          {userInfoGot.invitations.map((inv) => (
             <>
               <DropdownMenuItem>
                 <p>

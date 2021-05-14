@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import User from '../models/userModel.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
+import Email from '../utils/email.js'
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -41,7 +42,13 @@ export const signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
   })
-
+  // const profileUrl = `${req.protocol}://${req.get('host')}/users/${newUser._id}`
+  const profileUrl = `${req.protocol}://${
+    process.env.NODE_ENV === 'development'
+      ? 'localhost:3000'
+      : 'practice-mern-marko.herokuapp.com'
+  }/users/${newUser._id}`
+  await new Email(newUser, profileUrl).sendWelcome()
   createSendToken(newUser, 201, res)
 })
 

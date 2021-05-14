@@ -1,4 +1,5 @@
-import path from 'path'
+import { fileURLToPath } from 'url'
+import path, { dirname } from 'path'
 import express from 'express'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
@@ -12,6 +13,15 @@ import teamRoutes from './routes/teamRoutes.js'
 import invitationRoutes from './routes/invitationRoutes.js'
 
 const app = express()
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+
+// Serving static files
+// app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -32,8 +42,6 @@ app.use('/api/v1/users/', userRoutes)
 app.use('/api/v1/posts/', postRoutes)
 app.use('/api/v1/teams/', teamRoutes)
 app.use('/api/v1/invitations/', invitationRoutes)
-
-const __dirname = path.resolve()
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')))

@@ -10,9 +10,24 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
+  // const gotUser = useSelector((state) => state.getUser)
+  // const { userInfo: userInfoGot } = gotUser
+
   const handleLougout = () => {
     dispatch(logout())
   }
+
+  // const handleBellClick = () => {
+  //   dispatch(getUser(userInfo._id))
+  // }
+
+  // useEffect(() => {
+  //   console.log(userInfoGot)
+  //   if (!userInfoGot) {
+  //     dispatch(getUser(userInfo._id))
+  //   }
+  // }, [userInfoGot, dispatch])
+
   return (
     <Container>
       <Nav>
@@ -28,7 +43,7 @@ const Header = () => {
                 {userInfo.firstName} {userInfo.lastName}
               </Link>
             </NavLink>
-            <Notifications userInfo={userInfo} />{' '}
+            <Notifications userInfo={userInfo} />
           </>
         )}
 
