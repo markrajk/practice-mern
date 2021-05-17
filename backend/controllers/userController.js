@@ -30,8 +30,8 @@ export const resizeUserPhoto = (req, res, next) => {
   if (!req.file) return next()
   req.fileSmall = { ...req.file }
 
-  req.file.filename = `user-${req.user.id}-lg.jpeg`
-  req.fileSmall.filename = `user-${req.user.id}-sm.jpeg`
+  req.file.filename = `user-${req.user.id}${Date.now()}-lg.jpeg`
+  req.fileSmall.filename = `user-${req.user.id}${Date.now()}-sm.jpeg`
 
   const imgPath =
     process.env === 'development'
