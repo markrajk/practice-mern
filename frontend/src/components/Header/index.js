@@ -15,6 +15,8 @@ const Header = () => {
   const updatedMe = useSelector((state) => state.updateMe)
   const { success } = updatedMe
 
+  const [timestamp, setTimestamp] = React.useState(Date.now())
+
   const handleLougout = () => {
     dispatch(logout())
   }
@@ -23,7 +25,9 @@ const Header = () => {
   //   dispatch(getUser(userInfo._id))
   // }
 
-  useEffect(() => {}, [success])
+  useEffect(() => {
+    setTimestamp(Date.now())
+  }, [success])
 
   return (
     <Container>
@@ -53,6 +57,7 @@ const Header = () => {
           <NavLink>
             <Link to={`/users/${userInfo._id}`}>
               <ProfileImg
+                key={`${userInfo._id}-${timestamp}`}
                 src={`/img/users/${userInfo.photoSm}`}
                 alt={userInfo.fullName}
               />
