@@ -24,6 +24,9 @@ const Profile = ({ history, match }) => {
   const gotUser = useSelector((state) => state.getUser)
   const { userInfo } = gotUser
 
+  const updatedMe = useSelector((state) => state.updateMe)
+  const { success } = updatedMe
+
   const [edit, setEdit] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -136,7 +139,7 @@ const Profile = ({ history, match }) => {
     }
 
     getUserStart()
-  }, [dispatch, history, match])
+  }, [dispatch, history, match, success])
 
   // useEffect(() => {
   //   if (!userInfo) {

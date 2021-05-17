@@ -79,7 +79,7 @@ export const updateMeReducer = (state = {}, action) => {
     case UPDATE_ME_REQUEST:
       return { loading: true }
     case UPDATE_ME_SUCCESS:
-      return { loading: false, userInfo: action.payload }
+      return { loading: false, success: true, userInfo: action.payload }
     case UPDATE_ME_FAIL:
       return { loading: false, error: action.payload }
     default:
