@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Notifications from './Notifications'
 import { Container, Nav, NavLink, ProfileImg } from './styles'
@@ -12,6 +12,8 @@ const Header = () => {
 
   // const gotUser = useSelector((state) => state.getUser)
   // const { userInfo: userInfoGot } = gotUser
+  const updatedMe = useSelector((state) => state.updateMe)
+  const { success } = updatedMe
 
   const handleLougout = () => {
     dispatch(logout())
@@ -21,12 +23,7 @@ const Header = () => {
   //   dispatch(getUser(userInfo._id))
   // }
 
-  // useEffect(() => {
-  //   console.log(userInfoGot)
-  //   if (!userInfoGot) {
-  //     dispatch(getUser(userInfo._id))
-  //   }
-  // }, [userInfoGot, dispatch])
+  useEffect(() => {}, [success])
 
   return (
     <Container>
