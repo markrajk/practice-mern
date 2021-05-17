@@ -1,4 +1,5 @@
 import express from 'express'
+
 import { signup, login, logout } from '../controllers/authController.js'
 import {
   getMe,
@@ -6,15 +7,15 @@ import {
   updateMe,
   updateUser,
   getAllUsers,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } from '../controllers/userController.js'
 import { createPost } from '../controllers/postController.js'
 
 import {
   protect,
   setUserIds,
-  setSenderIds,
   setReceiverIds,
-  restrictToTeamRoles,
 } from '../middlewares/authMiddlewares.js'
 
 const router = express.Router()
@@ -24,7 +25,7 @@ router.route('/login').post(login)
 router.route('/logout').get(logout)
 
 router.get('/me', protect, getMe, getUser)
-router.patch('/updateMe', protect, updateMe)
+router.patch('/updateMe', protect, uploadUserPhoto, resizeUserPhoto, updateMe)
 
 router.route('/').get(getAllUsers)
 router.route('/:id').get(getUser).patch(protect, updateUser)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Notifications from './Notifications'
-import { Container, Nav, NavLink } from './styles'
+import { Container, Nav, NavLink, ProfileImg } from './styles'
 import { Link } from 'react-router-dom'
 import { logout } from '../../actions/userActions'
 
@@ -35,17 +35,7 @@ const Header = () => {
           <Link to="/">Home</Link>
         </NavLink>
 
-        {userInfo && (
-          <>
-            {' '}
-            <NavLink>
-              <Link to={`/users/${userInfo._id}`}>
-                {userInfo.firstName} {userInfo.lastName}
-              </Link>
-            </NavLink>
-            <Notifications userInfo={userInfo} />
-          </>
-        )}
+        {userInfo && <Notifications userInfo={userInfo} />}
 
         {userInfo && (
           <NavLink>
@@ -62,6 +52,16 @@ const Header = () => {
             <Link to="/login">Log In</Link>
           )}
         </NavLink>
+        {userInfo && (
+          <NavLink>
+            <Link to={`/users/${userInfo._id}`}>
+              <ProfileImg
+                src={`/img/users/${userInfo.photoSm}`}
+                alt={userInfo.fullName}
+              />
+            </Link>
+          </NavLink>
+        )}
       </Nav>
     </Container>
   )

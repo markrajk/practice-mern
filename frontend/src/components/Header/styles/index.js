@@ -40,3 +40,9 @@ export const NavLink = styled.button`
     }
   `}
 `
+
+export const ProfileImg = styled.img`
+  width: 3em;
+  object-fit: cover;
+  border-radius: 999px;
+`

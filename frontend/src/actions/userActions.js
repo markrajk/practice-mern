@@ -186,10 +186,7 @@ export const logout = () => async (dispatch) => {
   await axios.get('/api/v1/users/logout')
 }
 
-export const updateMe = (firstName, lastName, email) => async (
-  dispatch,
-  getState
-) => {
+export const updateMe = (user) => async (dispatch, getState) => {
   try {
     dispatch({
       type: UPDATE_ME_REQUEST,
@@ -198,6 +195,12 @@ export const updateMe = (firstName, lastName, email) => async (
     const {
       userLogin: { userInfo },
     } = getState()
+
+    const formData = new FormData()
+    formData.append('firstName', user.firstName)
+    formData.append('lastName', user.lastName)
+    formData.append('email', user.email)
+    formData.append('photo', user.photo)
 
     const config = {
       headers: {
@@ -208,19 +211,19 @@ export const updateMe = (firstName, lastName, email) => async (
 
     const { data } = await axios.patch(
       '/api/v1/users/updateMe',
-      { firstName, lastName, email },
+      formData,
       config
     )
 
-    const user = data.data.user
-    user.token = userInfo.token
+    const updatedUser = data.data.user
+    updatedUser.token = userInfo.token
 
     dispatch({
       type: UPDATE_ME_SUCCESS,
-      payload: user,
+      payload: updatedUser,
     })
 
-    localStorage.setItem('userInfo', JSON.stringify(user))
+    localStorage.setItem('userInfo', JSON.stringify(updatedUser))
   } catch (error) {
     dispatch({
       type: UPDATE_ME_FAIL,

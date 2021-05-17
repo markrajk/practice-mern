@@ -12,7 +12,21 @@ import {
 import CrossIcon from '../Icons/CrossIcon'
 import PropTypes from 'prop-types'
 
-const Modal = ({ open, setOpen, title, buttons, children }) => {
+const Modal = ({
+  confirm,
+  cancel,
+  open,
+  setOpen,
+  title,
+  buttons,
+  children,
+}) => {
+  const confirmHandler = () => {
+    confirm()
+  }
+  const cancelHandler = () => {
+    cancel()
+  }
   const setOpenHandler = (bool) => {
     setOpen(bool)
   }
@@ -27,14 +41,17 @@ const Modal = ({ open, setOpen, title, buttons, children }) => {
         </ModalHeader>
         <ModalBody>{children}</ModalBody>
         <ModalFooter>
-          {buttons.map((button) => (
-            <ModalButton
-              className={button}
-              onClick={(e) => button === 'cancel' && setOpenHandler(false)}
-            >
-              {button}
+          {cancel && (
+            <ModalButton className="cancel" onClick={cancelHandler}>
+              Cancel
             </ModalButton>
-          ))}
+          )}
+
+          {confirm && (
+            <ModalButton className="confirm" onClick={confirmHandler}>
+              Confirm
+            </ModalButton>
+          )}
         </ModalFooter>
       </ModalContainer>
       <Backdrop />
@@ -45,5 +62,7 @@ Modal.prototype = {
   title: PropTypes.string.isRequired,
   button: PropTypes.array.isRequired,
   setOpen: PropTypes.func.isRequired,
+  confirm: PropTypes.func,
+  cancel: PropTypes.func,
 }
 export default Modal

@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema(
       minLenth: 8,
       select: false,
     },
+    photoLg: {
+      type: String,
+      default: 'default.png',
+    },
+    photoSm: {
+      type: String,
+      default: 'default.png',
+    },
   },
   {
     toJSON: { virtuals: true },
