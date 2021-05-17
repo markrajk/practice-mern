@@ -33,25 +33,22 @@ export const resizeUserPhoto = (req, res, next) => {
   req.file.filename = `user-${req.user.id}-lg.jpeg`
   req.fileSmall.filename = `user-${req.user.id}-sm.jpeg`
 
+  const imgPath =
+    process.env === 'development'
+      ? '../../frontend/public/img/users/'
+      : '../../frontend/build/img/users/'
+
   sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(
-      `${path.join(__dirname, '../../frontend/public/img/users/')}${
-        req.file.filename
-      }`
-    )
+    .toFile(`${path.join(__dirname, imgPath)}${req.file.filename}`)
 
   sharp(req.fileSmall.buffer)
     .resize(200, 200)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(
-      `${path.join(__dirname, '../../frontend/public/img/users/')}${
-        req.fileSmall.filename
-      }`
-    )
+    .toFile(`${path.join(__dirname, imgPath)}${req.fileSmall.filename}`)
 
   next()
 }
