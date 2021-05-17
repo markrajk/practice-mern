@@ -223,6 +223,11 @@ export const updateMe = (user) => async (dispatch, getState) => {
       payload: updatedUser,
     })
 
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: updatedUser,
+    })
+
     localStorage.setItem('userInfo', JSON.stringify(updatedUser))
   } catch (error) {
     dispatch({
