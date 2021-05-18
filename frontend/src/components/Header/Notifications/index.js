@@ -40,8 +40,11 @@ const Notifications = ({ userInfo }) => {
     setOpen(!open)
   }
 
-  const gotUser = useSelector((state) => state.getUser)
-  const { userInfo: userInfoGot } = gotUser
+  // const gotUser = useSelector((state) => state.getUser)
+  // const { userInfo: userInfoGot } = gotUser
+  // REPLACE WITH GET ME
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo: userInfoGot } = userLogin
 
   useEffect(() => {
     if (!userInfoGot) {

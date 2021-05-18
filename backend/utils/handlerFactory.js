@@ -14,6 +14,8 @@ export const getAll = (Model, popOptions) =>
         // user: req.params.userId,
       }
 
+    if (req.params.ownerId && req.user) filter = { owner: req.params.ownerId }
+
     //EXECUTE QUERY
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
@@ -64,6 +66,7 @@ export const createOne = (Model) =>
 
 export const updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    console.log(req.body)
     const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,

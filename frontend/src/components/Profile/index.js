@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import {
   Wrapper,
   Container,
+  ProfileImage,
   Title,
   SubTitle,
   TextLink,
@@ -158,6 +159,10 @@ const Profile = ({ history, match }) => {
         <Container>
           {userInfo && (
             <>
+              <ProfileImage
+                src={`/img/users/${userInfo.photoLg}`}
+                alt={userInfo.fullName}
+              />
               <Title>
                 <Editable
                   edit={edit}
@@ -206,6 +211,9 @@ const Profile = ({ history, match }) => {
               )}
             </>
           )}
+          <Link to={userInfo && `/users/${userInfo._id}/charts`}>
+            <h1 style={{ marginBottom: '15px' }}>Charts</h1>
+          </Link>
           <h1 style={{ marginBottom: '15px' }}>Teams:</h1>
           {/* {userInfo && userInfo.member && userInfo.member[0] ? (
           <>

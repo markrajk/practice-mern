@@ -8,6 +8,7 @@ import Wall from './components/Wall'
 import Post from './components/Post'
 import CreateTeamScreen from './screens/CreateTeam'
 import TeamScreen from './screens/TeamScreen'
+import ChartsScreen from './screens/ChartsScreen'
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           render={(props) => <Card {...props} cardType="signup" />}
         />
         <Route exact path="/users/:id" component={Profile} />
+        <Route exact path="/users/:id/charts" component={ChartsScreen} />
         <Route exact path="/posts/:id" component={Post} />
         <Route exact path="/createTeam" component={CreateTeamScreen} />
         <Route exact path="/teams/:id" component={TeamScreen} />

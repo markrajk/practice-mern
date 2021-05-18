@@ -6,6 +6,7 @@ export const Container = styled.header`
   left: 0;
   width: 100%;
   box-shadow: 0 3px 5px 0 #999;
+  z-index: 500;
 `
 export const Nav = styled.nav`
   ${({ theme }) => css`

@@ -34,7 +34,7 @@ export const resizeUserPhoto = (req, res, next) => {
   req.fileSmall.filename = `user-${req.user.id}${Date.now()}-sm.jpeg`
 
   const imgPath =
-    process.env === 'development'
+    process.env.NODE_ENV === 'development'
       ? '../../frontend/public/img/users/'
       : '../../frontend/build/img/users/'
 

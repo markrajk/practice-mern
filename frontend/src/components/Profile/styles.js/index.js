@@ -21,9 +21,17 @@ export const Container = styled.div`
     align-items: center;
     justify-content: center;
     text-align: center; */
+    padding: 3em 2em 0;
+    height: 100%;
+    justify-content: flex-start;
+    border-right: 2px solid ${theme.colors.black};
   `}
 `
-
+export const ProfileImage = styled.img`
+  margin-bottom: 2em;
+  width: 12em;
+  object-fit: cover;
+`
 export const Title = styled.h2`
   ${({ theme }) => css`
     margin-bottom: 1em;
